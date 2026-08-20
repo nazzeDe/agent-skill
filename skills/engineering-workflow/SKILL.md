@@ -40,7 +40,7 @@ State the intended behavior, implementation direction, validation, and whether a
 
 Show every proposed spec and ticket to the user before writing it. Persist approved agent artifacts through the selected local backend. The default backend stores them under `.scratch/<effort>/`; an active provider supplies its own mapping and cleanup rules. Never add agent-only material to public documentation or Git. Delete temporary artifacts when their work is complete or their durable content has been approved and moved into human-facing documentation.
 
-Access remote collaboration systems only when the user explicitly requests or permits it, and treat them as read-only. The user creates or changes Issues, PRs, comments, and labels.
+Access remote collaboration systems only when the user explicitly requests or permits it this turn. Default is local git only. With authorization, the parent may push and open a PR per [GIT.md](GIT.md). The user still owns merge and, unless separately authorized, issue/label/reviewer changes.
 
 ## 4. Implement
 
@@ -52,7 +52,14 @@ The parent implements after approval, then validates and applies `code-quality`.
 
 ### Heavy
 
-Use one fresh-context worker and one writer for the active worktree. Give the worker the approved ticket, relevant user decisions, validation contract, repository access, and any context paths declared by the selected artifact backend. The worker must explore the implementation, callers, tests, and relevant human documentation rather than rely on file hints.
+Default: shared repo, no worktree. Parent schedules:
+
+- one fresh-context worker per active ticket;
+- `Parallel: ok` + disjoint write surfaces -> may same-repo parallel;
+- possible contention (same files / generated artifacts / migrations / contract entrances / brittle fixtures) -> serial;
+- worktree only when serial is clearly more expensive than isolation.
+
+Worker prompt: Outcome, Contract, Acceptance, Validation, Boundaries + needed user decisions, validation expectations, repo access, backend context paths. Board/siblings/parallel/worktree decisions stay in parent context. Worker explores impl/callers/tests/docs; no file-path scripts.
 
 ## 5. Specialized Routes
 
@@ -62,12 +69,16 @@ Use one fresh-context worker and one writer for the active worktree. Give the wo
 - Logic or UI uncertainty that needs executable evidence: use `prototype`. Prototype code never becomes production code.
 - Explicit architecture review: use `improve-codebase-architecture`.
 
-## 6. Review And Complete
+## 6. Git
+
+Source-code commits follow [GIT.md](GIT.md). Parent owns branch/commit/push/PR decisions. Workers never commit.
+
+## 7. Review And Complete
 
 Lightweight work needs parent diff inspection and `code-quality`; independent review is optional.
 
 Heavy work needs at least one fresh-context, read-only reviewer covering correctness, regression risk, test value, and maintainability. Add specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Use one writer for accepted fixes. Re-review when fixes are substantial.
 
-Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. A ticket is executable only when it is `ready-for-agent` and all blockers are `done`. The worker reports evidence; the parent marks `done` after inspecting the diff, validation, and review. Wait for user acceptance when the result depends on human judgment.
+Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. A ticket is executable only when it is `ready-for-agent` and all blockers are `done`. Parent schedules from `Parallel` + conflict judgment. Workers do not choose tickets or worktrees. The worker reports evidence; the parent marks `done` after inspecting the diff, validation, and review. Wait for user acceptance when the result depends on human judgment.
 
-Completion requires approved behavior, valuable tests or the strongest alternative validation, final diff inspection, the `code-quality` completion signal, dispositioned review findings, and explicit residual risks.
+Completion requires approved behavior, valuable tests or the strongest alternative validation, final diff inspection, the `code-quality` completion signal, dispositioned review findings, explicit residual risks, and [GIT.md](GIT.md) staging/message/hooks when committing.

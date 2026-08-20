@@ -1,47 +1,62 @@
 ---
 name: to-tickets
-description: Turn an approved spec or clear request into small local agent tickets with observable outcomes, explicit blockers, and user approval before persisting them through the selected artifact backend.
+description: Split approved production-code work into small, independent, vertical, verifiable local agent tickets; docs/chores stay with parent; user approves before persist via engineering-workflow artifact backend.
 disable-model-invocation: true
 ---
 
 # To Tickets
 
-Tickets are short-lived execution contracts for agents. They live in the local artifact backend selected by `engineering-workflow`, not remote trackers or public documentation. Read `../engineering-workflow/ARTIFACT-BACKENDS.md` if the backend has not been resolved.
+Short-lived agent execution contracts. Persist only via the backend selected by `engineering-workflow` (`../engineering-workflow/ARTIFACT-BACKENDS.md` if unresolved). Not remote trackers / public docs.
 
 ## Process
 
-1. Start from the approved conversation or spec. Return to `grill-me` if a user-owned decision is missing.
-2. Split work into the smallest independently verifiable vertical slices. A slice crosses only the layers needed for its behavior; do not force schema, API, UI, and tests into every ticket.
-3. State real `Blocked by` edges. Prefer parallel frontier tickets when no dependency exists.
-4. Present the numbered split to the user with title, blockers, outcome, and acceptance criteria.
-5. Revise until the user approves. Only then persist the tickets through the selected backend. The scratch backend writes `.scratch/<effort>/tickets/<NN>-<slug>.md`; a provider may use another local representation while preserving the ticket contract below.
+1. Start from approved conversation or spec. Missing user-owned decision -> `grill-me`.
+2. Ticket only **production-code behavior** slices. Docs, agent-policy, process notes, and no-behavior chores -> parent handles after user approval; no ticket/worker. If a code slice needs a short human doc touch, keep it on the parent path or fold a one-line acceptance note into the code ticket; never a standalone doc ticket.
+3. Split to the **smallest independently verifiable vertical behavior**. Cross only needed layers. Do not force schema/API/UI/tests into every ticket.
+4. Context budget: aim **well below 150k**. Near/over 150k -> try further split if still independently verifiable. Cannot split -> keep one ticket, `Context risk: high` + reason.
+5. Real `Blocked by` only. Prefer low write-conflict parallel frontier when no behavior dependency.
+6. Show user: title, blockers, `Parallel`, high context risk, outcome, acceptance. Revise until approved, then persist. Scratch: `.scratch/<effort>/tickets/<NN>-<slug>.md`.
 
-Do not include file paths, line numbers, or implementation scripts. The worker must explore the repository, callers, tests, domain documentation, and ADRs. Include stable domain concepts and contracts when they constrain behavior.
+No file paths, line numbers, or impl scripts. Workers explore repo/callers/tests/domain docs/ADRs. Parent owns scheduling (which ticket, serial/parallel, worktree).
 
-## Ticket Format
+## Format
 
 ```markdown
 # <NN> - <Title>
 
 Status: ready-for-agent
 Blocked by: None | <ticket numbers>
+Parallel: ok | serial
+Context risk: normal | high
 
 ## Outcome
-<What becomes observable when this ticket is complete.>
+<observable result>
 
 ## Contract
-<Behavior, invariants, errors, and compatibility constraints.>
+<behavior, invariants, errors, compatibility>
 
 ## Acceptance Criteria
-- [ ] <Independently verifiable criterion>
+- [ ] <independently verifiable>
 
 ## Validation
-<Required evidence, commands, or user flow.>
+<evidence / commands / user flow>
 
 ## Boundaries
-<What this ticket does not change.>
+<out of scope>
 ```
 
-The executable frontier contains tickets with `Status: ready-for-agent` whose blockers are all `done`. There is no claim or in-progress state. The worker returns evidence; the parent marks `done` after validation and review. Keep completed tickets until all dependents finish, then clean up through the selected backend when the remaining material has no value.
+- `Parallel: ok` -> parent may co-run with other `ok` tickets when write surfaces look disjoint.
+- `serial` -> possible contention on same files / generated artifacts / migrations / contract entrances / brittle shared fixtures.
+- Omit `Context risk` when normal. If `high`, say why it cannot shrink; fold impl-relevant limits into `Boundaries`/`Contract`.
 
-For broad incompatible migrations, use expand-contract ordering rather than forcing temporarily broken vertical slices.
+## Dispatch
+
+Frontier: `ready-for-agent` + all blockers `done`. No claim/in-progress.
+
+Worker gets only: Outcome, Contract, Acceptance, Validation, Boundaries + needed user decisions / backend context paths.
+
+Parent keeps: Status, Blocked by, Parallel, siblings, board/orchestration.
+
+Worker returns evidence -> parent validates/reviews -> marks `done`. Keep done tickets until dependents finish; then backend cleanup.
+
+Broad incompatible migrations -> expand-contract order, not broken vertical slices.
