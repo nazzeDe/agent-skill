@@ -17,7 +17,7 @@ Short-lived agent execution contracts. Persist only via the backend selected by 
 5. Real `Blocked by` only. Prefer low write-conflict parallel frontier when no behavior dependency.
 6. Show user: title, blockers, `Parallel`, high context risk, outcome, acceptance. Revise until approved, then persist. Scratch: `.scratch/<effort>/tickets/<NN>-<slug>.md`.
 
-No file paths, line numbers, or impl scripts. Workers explore repo/callers/tests/domain docs/ADRs. Parent owns scheduling (which ticket, serial/parallel, worktree).
+No file paths, line numbers, or impl scripts inside the ticket. Workers explore repo/callers/tests/domain docs/ADRs. Parent owns scheduling (which ticket, serial/parallel, worktree).
 
 ## Format
 
@@ -53,10 +53,10 @@ Context risk: normal | high
 
 Frontier: `ready-for-agent` + all blockers `done`. No claim/in-progress.
 
-Worker gets only: Outcome, Contract, Acceptance, Validation, Boundaries + needed user decisions / backend context paths.
+After persist, run `/implement-ticket <ticket-path>`. Pass the path through `reads`; do not inline Outcome/Contract/Acceptance/Validation/Boundaries into the child prompt. Also `reads`: `.agents/constraints.md` when present, plus backend-declared context paths.
 
-Parent keeps: Status, Blocked by, Parallel, siblings, board/orchestration.
+Children read the ticket file. Parent keeps Status, Blocked by, Parallel, siblings, and board/orchestration out of the child prompt.
 
-Worker returns evidence -> parent validates/reviews -> marks `done`. Keep done tickets until dependents finish; then backend cleanup.
+Worker returns evidence; the template's reviewer inspects; parent marks `done`. Keep done tickets until dependents finish; then backend cleanup.
 
 Broad incompatible migrations -> expand-contract order, not broken vertical slices.

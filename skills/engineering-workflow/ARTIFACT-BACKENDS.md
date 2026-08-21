@@ -32,7 +32,7 @@ A backend may define only:
 
 A backend must not change:
 
-- lightweight versus heavy classification;
+- implementer versus orchestrator identity, or `/implement-ticket` dispatch;
 - user approval gates;
 - public behavior or scope decisions;
 - TDD and diagnostic routing;

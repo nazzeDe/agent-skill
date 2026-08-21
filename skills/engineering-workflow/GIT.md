@@ -10,9 +10,9 @@ Parent-owned. Workers do not commit, push, or open PRs.
 
 ## Commit
 
-- Parent commits only.
-- Heavy: one commit after each ticket is `done` (validated; reviewed when required).
-- Lightweight: one commit after user acceptance.
+- Parent commits only. Child workers never commit.
+- Orchestrator: one commit after each ticket is `done` (validated and reviewed).
+- Implementer identity: one commit after the user accepts the change.
 - Stage only files for that delivery. Exclude `.scratch/`, agent-only artifacts, and unrelated dirty files. Suspicious extra changes -> ask the user.
 - Message: follow repo convention (commitlint, CONTRIBUTING, recent style). If none: Conventional Commits `type(scope): summary` with optional body (why / ticket id). Types: `feat|fix|refactor|test|docs|perf|chore|...`. Breaking: `!` or footer.
 - Run repo hooks. Hook failure -> fix or ask; do not `--no-verify` unless the user explicitly authorizes it.
