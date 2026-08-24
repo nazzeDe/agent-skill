@@ -3,7 +3,9 @@ description: Dispatch one approved ticket to a fresh worker, then a fresh review
 argument-hint: "<ticket-path>"
 ---
 
-Run this as orchestrator. Do not implement in this session. Do not reload `to-tickets`, list agents, or pre-read framework APIs. Call `subagent` once with `workflowScript` below. Replace nothing except backend-declared extra `reads` when the selected artifact backend names them.
+Run this as orchestrator. Production code stays in the child sessions. The ticket file is the child's planning document.
+
+Read `writing-for-agents` before sending the child task. Goal names the ticket Outcome; Context names the seam; Success includes the worker command and a deep module. You may substitute those Goal/Context lines from the ticket; keep the rest of this contract. Call `subagent` once with `workflowScript` below. Add backend-declared extra `reads` when the selected artifact backend names them.
 
 Ticket path: `$1`
 
@@ -15,36 +17,38 @@ const reads = [ticket, ".agents/constraints.md"];
 const worker = await runs.run("impl", {
   agent: "worker",
   context: "fresh",
-  skill: ["tdd", "code-quality"],
+  skill: ["tdd", "code-quality", "deep-module-design"],
   reads,
   phase: "Implementation",
   task: [
-    "Goal: implement the approved ticket.",
-    "Context: read " + ticket + " first. Read .agents/constraints.md if it was provided for repo pins.",
-    "Success: the ticket Outcome, Contract, and Acceptance hold. Run the Validation commands.",
-    "Explore implementation, callers, and tests as needed.",
-    "Boundaries: sibling tickets, engineering-workflow, to-spec, and to-tickets stay unread. Do not commit. Escalate unapproved user-owned decisions.",
-    "Output: Implemented / Changed files / Validation / Residual risks.",
-    "Stop when: acceptance is met, or a user-owned decision is required."
+    "Goal: implement the approved ticket Outcome as a deep module in the seam the ticket names.",
+    "Context: the ticket file is the planning document. Start in the named seam. Read .agents/constraints.md when it was provided for repo pins.",
+    "Success: Outcome, Contract, and Acceptance hold. The worker Validation command exits 0. Callers see a small contract; complexity stays inside; tests use that contract.",
+    "Work: read the ticket and the named seam. The next action is a _red_ test. A compile or test error names the next file. Shape the module with tdd, code-quality, and deep-module-design as you go.",
+    "At a boundary: escalate unapproved user-owned decisions; keep the diff on the ticket seam.",
+    "Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows.",
+    "Output: Implemented / Changed files / Validation / Residual risks / Module depth.",
+    "Stop when: the Validation command exits 0, Acceptance holds, and the changed module is deep, or a user-owned decision is required."
   ].join("\n")
 });
 const review = await runs.run("review", {
   agent: "reviewer",
   context: "fresh",
-  skill: "code-quality",
+  skill: ["code-quality", "deep-module-design"],
   reads,
   phase: "Review",
   task: [
-    "Goal: review the worker change against the ticket contract.",
+    "Goal: review the worker change against the ticket contract and module depth.",
     "Context: ticket " + ticket + ". Worker evidence:",
     worker.output,
-    "Success: Correct / Blocker / Note with file evidence, ordered by impact.",
-    "Start from the ticket and the files the worker changed. Read those files, their tests and callers, and definitions of changed symbols. Follow one more dependency hop if needed to verify a finding.",
-    "Boundaries: sibling tickets, workflow skills, and modules the ticket and change do not couple to stay unread. Do not edit.",
-    "Stop when: findings are evidence-backed, or the change matches the contract."
+    "In-scope: the ticket and the files the worker changed.",
+    "Success: Correct / Blocker / Note with file evidence, ordered by impact. Depth: small contract, hidden complexity, tests through that contract.",
+    "Work: read those files, their tests, callers, and definitions of changed symbols. One hop follows a symbol the diff uses (or that uses the diff) to verify a finding.",
+    "At a boundary: return a finding. Project files stay unchanged.",
+    "Stop when: findings are evidence-backed, or the change matches the contract and is deep."
   ].join("\n")
 });
 return { worker: worker.output, review: review.output };
 ```
 
-After it returns: inspect `git diff` yourself, disposition blockers, mark the ticket `done` only when validation and review pass, and commit per `engineering-workflow/GIT.md`. One writer for accepted fixes; re-review when those fixes are substantial.
+After it returns: take worker Validation and reviewer disposition as the acceptance evidence. When the reviewer reports no blockers, mark the ticket `done` and commit the files the worker listed per `engineering-workflow/GIT.md`. Run a parent-owned user-flow only when the ticket names one. Blockers go to one writer and then a fresh re-review.

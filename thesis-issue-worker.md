@@ -10,7 +10,7 @@ inheritSkills: false
 defaultContext: fresh
 defaultReads: .agents/constraints.md
 acceptanceRole: writer
-skills: tdd, code-quality, agent-communication
+skills: tdd, code-quality
 completionGuard: false
 ---
 

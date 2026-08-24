@@ -11,21 +11,21 @@ The user's named practices are examples, not an exhaustive checklist. When the u
 
 ## Quality Model
 
-Evaluate the changed behavior and touched area across the dimensions that materially apply:
+Evaluate the changed files and the behavior they touch across the dimensions that materially apply:
 
 - **Correctness and invariants:** behavior, edge cases, state transitions, validation, failure semantics, concurrency, and resource lifetime are explicit and defensible.
 - **Clarity:** names reveal domain intent; control flow and data flow are easy to follow; abstraction levels are consistent; comments explain reasons and constraints rather than narrating code.
 - **Cohesion and responsibility:** behavior that changes together lives together. A module has a coherent reason to change and does not mix unrelated policy, orchestration, storage, transport, or presentation concerns.
 - **Coupling and locality:** dependencies are minimal and directional; business knowledge is not scattered; likely changes remain local.
-- **Abstraction quality:** interfaces are smaller and simpler than their implementations. Prefer deep modules that hide complexity. Avoid pass-through wrappers, speculative generality, and interfaces created only to satisfy a pattern.
+- **Abstraction quality:** interfaces are smaller and simpler than their implementations. The changed module is **deep**: useful capability and hidden complexity relative to a small contract. Apply `deep-module-design` to that module.
 - **API usability:** contracts, invariants, errors, side effects, ordering constraints, compatibility, and performance characteristics are difficult to misunderstand or misuse.
 - **SOLID and other principles:** use them as diagnostic lenses, not goals. Apply a principle only when it reduces concrete coupling, ambiguity, duplication, or change cost.
 - **Simplicity:** remove accidental complexity, dead paths, unnecessary state, redundant indirection, and duplication of knowledge. Do not collapse distinct concepts merely because code looks similar.
-- **Test quality:** tests protect meaningful behavior through stable interfaces, catch plausible regressions, remain deterministic, and survive internal refactoring. Delete or avoid brittle and redundant tests.
+- **Test quality:** tests protect meaningful behavior through the module's stable contract, catch plausible regressions, remain deterministic, and stay valid across an internal rewrite. Prefer state and result verification over internal interactions.
 - **Operational quality:** where relevant, errors preserve context, logs and metrics support diagnosis, retries and idempotency are intentional, and sensitive data is protected.
 - **Security and privacy:** validate trust boundaries, authorization, injection surfaces, secret handling, data exposure, and unsafe defaults in proportion to risk.
 - **Performance and resources:** address evident algorithmic, I/O, memory, network, or rendering costs when they matter; do not optimize without evidence.
-- **Repository fit:** follow established domain language, architecture decisions, idioms, formatting, dependency choices, and documentation conventions unless there is an approved reason to change them.
+- **Repository fit:** match domain language, idioms, formatting, and dependency choices already visible in the touched module and its neighbors.
 - **Reviewability:** keep the diff focused, explain non-obvious decisions, and avoid mixing mechanical churn with behavioral changes.
 
 ## Design Heuristics
@@ -56,4 +56,4 @@ Run focused validation after each applied refactor. Never refactor while the sui
 
 ## Completion Signal
 
-Quality review is complete when the final diff is correct, proportionately tested, understandable without avoidable reconstruction work, coherent with the surrounding system, and free of fixes worth doing now. Report material refactors, deliberate non-refactors, and residual risks.
+Quality review is complete when the final diff is correct, tested through the module contract, understandable without avoidable reconstruction, **deep** (small interface, hidden complexity, local change), coherent with the touched module, and free of fixes worth doing now. Judge from the diff, its callers, and one hop along that dependency trail. Report material refactors, deliberate non-refactors, and residual risks.

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # To Spec
 
-Use this for work with multiple delivery slices, important product behavior, or cross-boundary contracts. Use `to-tickets` directly only when one clear slice does not need a behavior spec. Use the artifact backend already selected by `engineering-workflow`; read `../engineering-workflow/ARTIFACT-BACKENDS.md` if it has not been resolved.
+Use this for work with multiple delivery slices, important product behavior, or cross-boundary contracts. Use `to-tickets` directly only when one clear slice does not need a behavior spec. The spec is a document later tickets and workers will load; write it with `writing-for-agents`. Use the artifact backend already selected by `engineering-workflow`; read `../engineering-workflow/ARTIFACT-BACKENDS.md` if it has not been resolved.
 
 ## Process
 

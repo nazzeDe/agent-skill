@@ -34,7 +34,9 @@ Access remote collaboration systems only when the user explicitly requests or pe
 
 ## 3. Implement
 
-After a ticket is approved and persisted, run `/implement-ticket <ticket-path>`. Do not reload `to-tickets`. Do not inline the ticket body. Do not list agents or read pi-subagents reference manuals unless the template is not enough. Do not pre-read framework APIs for the worker. Do not give children sibling tickets, specs they do not need, or this workflow.
+After a ticket is approved and persisted, run `/implement-ticket <ticket-path>`. That template owns the child contract.
+
+The child `reads` the ticket path, `.agents/constraints.md` when present, and backend-declared context paths. The ticket is the child's only planning document.
 
 Default: shared repo, no worktree.
 
@@ -43,9 +45,9 @@ Default: shared repo, no worktree.
 - possible contention (same files / generated artifacts / migrations / contract entrances / brittle fixtures) -> serial;
 - worktree only when serial is clearly more expensive than isolation.
 
-Children are fresh via `agentOverrides`. The template passes `reads` for the ticket, `.agents/constraints.md` if present, and backend context paths. Board, siblings, parallel, and worktree decisions stay in the parent.
+Children are fresh via `agentOverrides`. Parent keeps Status, Blocked by, Parallel, and worktree decisions.
 
-Use `tdd` in the worker when a valuable regression test exists. Do not manufacture tests for trivial wiring, formatting, declarative configuration, or behavior-free changes; use the strongest relevant validation instead.
+Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
 
 ## 4. Specialized Routes
 
@@ -61,10 +63,12 @@ Source-code commits follow [GIT.md](GIT.md). Parent owns branch/commit/push/PR d
 
 ## 6. Review And Complete
 
-`/implement-ticket` already runs a fresh, read-only reviewer. That reviewer starts from the ticket and the worker's changed files, then reads tests, callers, and definitions of changed symbols. They may follow one more dependency hop to verify a finding. They do not read sibling tickets, this workflow, or modules the ticket and change do not couple to. They do not explain extra reads.
+`/implement-ticket` already runs a fresh, read-only reviewer.
 
-Add specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Use one writer for accepted fixes. Re-review when fixes are substantial.
+Add specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Use one writer for accepted fixes. Re-review when those fixes are substantial.
 
-Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment. The worker reports evidence; the parent marks `done` after inspecting the diff, validation, and review. Wait for user acceptance when the result depends on human judgment.
+Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment.
 
-Completion requires approved behavior, valuable tests or the strongest alternative validation, final diff inspection, the `code-quality` completion signal, dispositioned review findings, explicit residual risks, and [GIT.md](GIT.md) staging/message/hooks when committing.
+Treat worker Validation and reviewer disposition as the acceptance evidence. When the reviewer reports no blockers, mark the ticket `done` and commit the files the worker listed. Run a parent-owned user-flow only when the ticket names one. Wait for user acceptance when that flow is the acceptance criterion. Blockers go to one writer and then a fresh re-review.
+
+Completion is those child signals plus [GIT.md](GIT.md) staging/message/hooks when committing.
