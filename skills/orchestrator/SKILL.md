@@ -1,18 +1,18 @@
 ---
-name: engineering-workflow
-description: Orchestrator for production-code delivery. Tickets, path-only dispatch, isolated workers and reviewers. Load only after the user switches this session to orchestrator.
+name: orchestrator
+description: Tickets, path-only dispatch, isolated workers and reviewers for production-code delivery. Load only when the user explicitly starts orchestration.
 disable-model-invocation: true
 ---
 
-# Engineering Workflow
+# Orchestrator
 
-This skill is for the **orchestrator** identity only. Documentation and agent-policy files stay with the parent after user approval; they do not take tickets or workers.
+This session does not modify production code. Documentation and agent-policy files stay here after user approval; they do not take tickets or workers.
 
-The parent session does not modify production code. Dispatch starts a fresh worker and a fresh reviewer. `Blocker` work and a follow-up resume that pair; see Review And Complete. Spawn, resume, and follow-up: [pi.md](pi.md) when this session has `subagent` `workflowScript`; [claude.md](claude.md) when this session has the `Agent` tool. Another harness adds a sibling adapter.
+Dispatch starts a fresh worker and a fresh reviewer. `Blocker` work and a follow-up resume that pair; see Review And Complete. Spawn, resume, and follow-up: [pi.md](pi.md) when this session has `subagent` `workflowScript`; [claude.md](claude.md) when this session has the `Agent` tool. Another harness adds a sibling adapter.
 
 ## 0. Select Artifact Backend
 
-Read [ARTIFACT-BACKENDS.md](ARTIFACT-BACKENDS.md). Default to `.scratch`. Activate a project provider only through a valid `.agents/artifact-backend.json`; a tool-specific directory alone never activates one.
+Read [ARTIFACT-BACKENDS.md](../../ARTIFACT-BACKENDS.md). Default to `.scratch`. Activate a project provider only through a valid `.agents/artifact-backend.json`; a tool-specific directory alone never activates one.
 
 Select the backend once for the effort. Pass any provider-declared child context paths through dispatch `reads`, together with the ticket path and `.agents/constraints.md` when that file exists. `.agents/constraints.md` holds repo-wide pins (language/version, gate commands, forbidden stacks). Slice behavior stays in the ticket. Missing constraints file: ticket plus code closure only.
 
@@ -30,7 +30,7 @@ An approved ticket authorizes implementation within its stated behavior and boun
 
 Show the user the behavior and scope they can judge before persisting a spec or ticket. The artifact is for the agent. Persist approved agent artifacts through the selected local backend. Never add agent-only material to public documentation or Git. Delete temporary artifacts when their work is complete or their durable content has been approved and moved into human-facing documentation.
 
-Access remote collaboration systems only when the user explicitly requests or permits it this turn. Default is local git only. With authorization, the parent may push and open a PR per [GIT.md](GIT.md). The user still owns merge and, unless separately authorized, issue/label/reviewer changes.
+Access remote collaboration systems only when the user explicitly requests or permits it this turn. Default is local git only. With authorization, the parent may push and open a PR per [GIT.md](../../GIT.md). The user still owns merge and, unless separately authorized, issue/label/reviewer changes.
 
 ## 3. Implement
 
@@ -59,7 +59,7 @@ Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. S
 
 ## 5. Git
 
-Source-code commits follow [GIT.md](GIT.md). Parent owns branch/commit/push/PR decisions. Child workers never commit.
+This session commits after a ticket is `done`. Dispatched children do not commit, push, or open PRs. Commits follow [GIT.md](../../GIT.md).
 
 ## 6. Review And Complete
 
@@ -69,7 +69,7 @@ Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent
 
 Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` / `Note`. A user-owned decision (behavior, scope, public contract, cost, compatibility, migration, security, risk) is an escalate, not a private child choice.
 
-1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](GIT.md). Speak the user-observable behaviors this slice delivers — spec Acceptance for this slice, or the behavior and scope already confirmed when there is no spec. Then schedule from `Parallel` plus conflict judgment. Done when the ticket is `done`, those files are committed, and the user has been told those behaviors.
+1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](../../GIT.md). Speak the user-observable behaviors this slice delivers — spec Acceptance for this slice, or the behavior and scope already confirmed when there is no spec. Then schedule from `Parallel` plus conflict judgment. Done when the ticket is `done`, those files are committed, and the user has been told those behaviors.
 2. Any `Blocker`: `resume` `impl` with the full review text and the adapter resume-worker contract. Done when the worker accounts for every `Blocker` — fix, evidenced reject, or escalate.
 3. After that worker return:
    - user-owned escalate → ask the user. Stop.
@@ -78,7 +78,7 @@ Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` 
 4. Still a `Blocker` and the pair made _progress_ → step 2. Progress is changed files, or an evidenced reject per `Blocker`.
 5. Still a `Blocker` and no progress — the same `Blocker` stands after an evidenced reject, or step 3 already stopped → ask the user. The next writer is that same `impl` only after the user says so.
 
-Reviewer output is findings only. Completion is those child signals plus [GIT.md](GIT.md) staging/message/hooks when committing.
+Reviewer output is findings only. Completion is those child signals plus [GIT.md](../../GIT.md) staging/message/hooks when committing.
 
 ### User report
 

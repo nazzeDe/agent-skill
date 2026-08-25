@@ -1,6 +1,6 @@
 # Local Artifact Backends
 
-Artifact backends persist agent-only planning and continuity material. They do not define the engineering workflow.
+Artifact backends persist agent-only planning and continuity material. They do not choose identity or dispatch.
 
 ## Selection
 
@@ -26,13 +26,13 @@ A backend may define only:
 
 - local paths for approved specs, tickets, research, and handoffs;
 - how an effort is resumed across sessions;
-- a projection of engineering-workflow state into backend metadata;
+- a projection of effort state into backend metadata;
 - local cleanup or archive commands;
 - context files that a worker or reviewer must receive.
 
 A backend must not change:
 
-- implementer versus orchestrator identity, or ticket dispatch;
+- session identity or ticket dispatch;
 - user approval gates;
 - public behavior or scope decisions;
 - TDD and diagnostic routing;
@@ -41,7 +41,7 @@ A backend must not change:
 - remote collaboration permissions;
 - source-code commit policy.
 
-When backend instructions conflict with `engineering-workflow` outside the allowed persistence boundary, `engineering-workflow` wins.
+When backend instructions conflict with this protocol outside the allowed persistence boundary, this protocol wins.
 
 ## Scratch Backend
 

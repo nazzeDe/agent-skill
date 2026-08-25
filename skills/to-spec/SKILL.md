@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # To Spec
 
-Use this for work with multiple delivery slices, important product behavior, or cross-boundary contracts. Use `to-tickets` directly only when one clear slice does not need a behavior spec. The spec is a document the orchestrator and `to-tickets` load; write it with `writing-for-agents`. Use the artifact backend already selected by `engineering-workflow`; read `../engineering-workflow/ARTIFACT-BACKENDS.md` if it has not been resolved.
+Use this for work with multiple delivery slices, important product behavior, or cross-boundary contracts. Use `to-tickets` directly only when one clear slice does not need a behavior spec. The spec is a document the orchestrator and `to-tickets` load; write it with `writing-for-agents`. Use the artifact backend already selected for this effort; read `../../ARTIFACT-BACKENDS.md` if it has not been resolved.
 
 ## Process
 
@@ -51,6 +51,6 @@ Do not publish remotely or commit agent-only artifacts. Do not place agent-only 
 None, or unresolved items that block ticketing.
 ```
 
-Acceptance Criteria are user-observable behaviors. engineering-workflow speaks the matching criteria at ticket `done`.
+Acceptance Criteria are user-observable behaviors.
 
 Use user stories only when distinct roles or workflows make them clearer. Do not add exhaustive sections that do not change implementation behavior.

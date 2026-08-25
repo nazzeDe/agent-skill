@@ -2,15 +2,16 @@
 
 <!-- trellis-local-passive:v1 -->
 
-This file is a persistence-provider contract for the global `engineering-workflow`. It is not a second development workflow.
+This file is a persistence-provider contract for [ARTIFACT-BACKENDS.md](../../ARTIFACT-BACKENDS.md). It is not a workflow.
 
 ## Authority
 
-- `engineering-workflow` is the only production-code router and completion authority.
+- This backend stores specs, tickets, research, and handoffs. It does not choose identity or dispatch.
+- When `orchestrator` is loaded, that skill owns ticket dispatch and completion.
 - Global skills own clarification, specification, ticketing, TDD, diagnosis, implementation, review, and quality gates.
 - Trellis supplies local task storage, workspace memory, runtime task identity, project-specific specs, and Pi context injection.
 - Native Trellis brainstorm, implement, check, update-spec, channel, continue, start, and finish flows are inactive.
-- `pi-subagents` is the only sub-agent orchestrator. Do not call `trellis_subagent`.
+- `pi-subagents` is the only sub-agent runtime. Do not call `trellis_subagent`.
 
 ## Local-Only Boundary
 
@@ -23,7 +24,7 @@ Everything under `.trellis/`, `.pi/`, `.agents/`, and `.scratch/`, plus root AI 
 The active Trellis task directory is the provider effort root.
 
 - Resolve it with `python3 ./.trellis/scripts/task.py current --source`.
-- Create a task only after `engineering-workflow` authorizes persistent planning material.
+- Create a task only after persistent planning material is authorized.
 - Task creation records planning state; it does not authorize implementation.
 - Run `task.py start` only after the normal implementation approval gate.
 - Archive only after the normal completion gate, with auto-commit disabled.
@@ -68,7 +69,7 @@ The next session reads task artifacts first and the handoff second. Workspace jo
 
 - `planning`: persistent planning exists, but implementation is not approved.
 - `in_progress`: the latest approved execution contract authorizes implementation.
-- `completed` or archived: `engineering-workflow` completion gates passed.
+- `completed` or archived: the owning skill's completion gates passed.
 
 Trellis status never substitutes for ticket blockers, worker evidence, review disposition, or user acceptance.
 
@@ -79,22 +80,21 @@ When dispatching through `pi-subagents`, pass the active task's `prd.md`, option
 ## Phase Index
 
 ```text
-Engineering workflow: global engineering-workflow
 Artifact backend: Trellis local
-Sub-agent orchestrator: pi-subagents
+Sub-agent runtime: pi-subagents
 Trellis role: persistence and context injection only
 ```
 
 [workflow-state:no_task]
-Trellis local storage is available, but no task is active. Follow `engineering-workflow`. Create a Trellis task only when that workflow authorizes persistent planning material.
+Trellis local storage is available, but no task is active. Persist agent artifacts per ARTIFACT-BACKENDS.md. Create a Trellis task only when persistent planning material is authorized.
 [/workflow-state:no_task]
 
 [workflow-state:planning]
-The active Trellis task is local planning storage. Follow `engineering-workflow`; resolve decisions and obtain the required approval before implementation. Do not invoke native Trellis workflow skills or agents.
+The active Trellis task is local planning storage. Resolve decisions and obtain the required approval before implementation. Do not invoke native Trellis workflow skills or agents.
 [/workflow-state:planning]
 
 [workflow-state:in_progress]
-The active Trellis task stores the approved execution contract. Follow `engineering-workflow`, use `pi-subagents` when delegation is required, and keep reviewers read-only. Do not invoke native Trellis workflow skills or agents.
+The active Trellis task stores the approved execution contract. When `orchestrator` is loaded, dispatch through its harness adapter and keep reviewers read-only. Do not invoke native Trellis workflow skills or agents.
 [/workflow-state:in_progress]
 
 [workflow-state:completed]

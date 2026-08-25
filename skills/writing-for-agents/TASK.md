@@ -1,6 +1,6 @@
 # Task shape
 
-The document-type branch of [`writing-for-agents`](SKILL.md) for a child task, review prompt, or other one-shot agent prompt. Ticket dispatch already fills this in the engineering-workflow harness adapter; use this file for ad-hoc tasks.
+The document-type branch of [`writing-for-agents`](SKILL.md) for a child task, review prompt, or other one-shot agent prompt. Ticket dispatch already fills this in the orchestrator harness adapter; use this file for ad-hoc tasks.
 
 ```text
 Goal: <concrete outcome>

@@ -9,7 +9,7 @@ Use official documentation, specifications, source code, standards, and first-pa
 
 ## Output
 
-Use the local artifact backend selected by `engineering-workflow`; read `../engineering-workflow/ARTIFACT-BACKENDS.md` if it has not been resolved.
+Use the local artifact backend; read `../../ARTIFACT-BACKENDS.md` if it has not been resolved.
 
 - Single-session lookup: return concise findings to the parent; do not create a file.
 - Cross-session or repeatedly referenced work: persist a note through the selected backend. The scratch backend writes `.scratch/<effort>/research/<topic>.md`; a provider supplies its equivalent local path.

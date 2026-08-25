@@ -35,4 +35,4 @@ The parent compares interface complexity, hidden functionality, locality, compat
 
 Run at most one focused adversarial review round against the recommended design. If no design satisfies the approved constraints, report the blocking constraint or missing decision instead of launching more rounds.
 
-The user selects the contract. Implementation returns to `engineering-workflow` and its spec or ticket path.
+The user selects the contract. If `orchestrator` is loaded, continue from its spec or ticket path.
