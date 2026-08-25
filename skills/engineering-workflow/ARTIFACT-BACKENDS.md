@@ -36,7 +36,7 @@ A backend must not change:
 - user approval gates;
 - public behavior or scope decisions;
 - TDD and diagnostic routing;
-- one-writer and fresh-context, read-only reviewer rules;
+- one-writer, read-only reviewer, and same-pair resume rules;
 - validation, code-quality, or completion requirements;
 - remote collaboration permissions;
 - source-code commit policy.

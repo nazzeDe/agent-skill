@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 This skill is for the **orchestrator** identity only. Documentation and agent-policy files stay with the parent after user approval; they do not take tickets or workers.
 
-The parent session does not modify production code. Implementation and independent review run in fresh child sessions via `/implement-ticket`.
+The parent session does not modify production code. `/implement-ticket` starts a fresh worker and a fresh reviewer. Later `Blocker` work resumes that pair; see Review And Complete.
 
 ## 0. Select Artifact Backend
 
@@ -45,7 +45,7 @@ Default: shared repo, no worktree.
 - possible contention (same files / generated artifacts / migrations / contract entrances / brittle fixtures) -> serial;
 - worktree only when serial is clearly more expensive than isolation.
 
-Children are fresh via `agentOverrides`. Parent keeps Status, Blocked by, Parallel, and worktree decisions.
+The first pair is fresh via `agentOverrides`. Parent keeps Status, Blocked by, Parallel, and worktree decisions.
 
 Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
 
@@ -63,12 +63,19 @@ Source-code commits follow [GIT.md](GIT.md). Parent owns branch/commit/push/PR d
 
 ## 6. Review And Complete
 
-`/implement-ticket` already runs a fresh, read-only reviewer.
-
-Add specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Use one writer for accepted fixes. Re-review when those fixes are substantial.
+`/implement-ticket` starts one fresh worker (`impl`) and one fresh, read-only reviewer (`review`). Keep those run ids. Specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Specialist `Blocker`s use the same `impl` pair.
 
 Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment.
 
-Treat worker Validation and reviewer disposition as the acceptance evidence. When the reviewer reports no blockers, mark the ticket `done` and commit the files the worker listed. Run a parent-owned user-flow only when the ticket names one. Wait for user acceptance when that flow is the acceptance criterion. Blockers go to one writer and then a fresh re-review.
+Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` / `Note`. A user-owned decision (behavior, scope, public contract, cost, compatibility, migration, security, risk) is an escalate, not a private child choice.
 
-Completion is those child signals plus [GIT.md](GIT.md) staging/message/hooks when committing.
+1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](GIT.md). Run a parent-owned user-flow only when the ticket names one. Wait for user acceptance when that flow is the acceptance criterion. Done when the reviewer reported no `Blocker`.
+2. Any `Blocker`: `resume` `impl` with the full review text and the `/implement-ticket` resume-worker contract. Done when the worker accounts for every `Blocker` — fix, evidenced reject, or escalate.
+3. After that worker return:
+   - user-owned escalate → ask the user. Stop.
+   - no changed files and no evidenced reject for each `Blocker` → ask the user. Stop.
+   - otherwise `resume` `review` with the worker evidence and the `/implement-ticket` resume-reviewer contract. Done when that reviewer returns a new Correct / Blocker / Note list.
+4. Still a `Blocker` and the pair made _progress_ → step 2. Progress is changed files, or an evidenced reject per `Blocker`.
+5. Still a `Blocker` and no progress — the same `Blocker` stands after an evidenced reject, or step 3 already stopped → ask the user. The next writer is that same `impl` only after the user says so.
+
+Reviewer output is findings only. Completion is those child signals plus [GIT.md](GIT.md) staging/message/hooks when committing.

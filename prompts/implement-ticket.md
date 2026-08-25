@@ -51,4 +51,41 @@ const review = await runs.run("review", {
 return { worker: worker.output, review: review.output };
 ```
 
-After it returns: take worker Validation and reviewer disposition as the acceptance evidence. When the reviewer reports no blockers, mark the ticket `done` and commit the files the worker listed per `engineering-workflow/GIT.md`. Run a parent-owned user-flow only when the ticket names one. Blockers go to one writer and then a fresh re-review.
+Keep the workflow's `impl` and `review` run ids. After it returns, follow `engineering-workflow` Review And Complete. Resume with the contracts below; do not start a new pair.
+
+Resume worker when Review And Complete says any `Blocker`. Interpolate the review text. `async: true`.
+
+```javascript
+return runs.run("impl", {
+  resume: IMPL_RUN_ID,
+  task: [
+    "Goal: account for every Blocker in the review. Fix a real defect, reject a misread with file evidence, or escalate a user-owned decision.",
+    "Context: the ticket is still the planning document. You already implemented this seam. Full review:",
+    REVIEW_TEXT,
+    "Success: each Blocker is fixed, rejected with file evidence, or escalated. If you changed code, the worker Validation command exits 0. Callers still see the same small contract.",
+    "Work: read each Blocker. The next action for a real defect is a _red_ test. Shape the fix with tdd, code-quality, and deep-module-design as you go.",
+    "At a boundary: escalate unapproved user-owned decisions; keep the diff on the ticket seam.",
+    "Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows.",
+    "Output: Fixed / Rejected / Escalated / Changed files / Validation.",
+    "Stop when: every Blocker is accounted for, or a user-owned decision is required."
+  ].join("\n")
+});
+```
+
+Resume the same reviewer when Review And Complete says the worker made _progress_. Interpolate the worker evidence. `async: true`.
+
+```javascript
+return runs.run("review", {
+  resume: REVIEW_RUN_ID,
+  task: [
+    "Goal: re-review the worker response against the ticket contract and the prior Blockers.",
+    "Context: ticket $1. Worker evidence:",
+    WORKER_TEXT,
+    "In-scope: the ticket, the prior Blockers, and the files the worker changed.",
+    "Success: Correct / Blocker / Note with file evidence, ordered by impact. Withdraw a Blocker the worker refuted. Keep a Blocker only with remaining file evidence. Depth: small contract, hidden complexity, tests through that contract.",
+    "Work: read those files, their tests, callers, and definitions of changed symbols. One hop follows a symbol the diff uses (or that uses the diff) to verify a finding.",
+    "At a boundary: return a finding. Project files stay unchanged.",
+    "Stop when: findings are evidence-backed, or the remaining change matches the contract and is deep."
+  ].join("\n")
+});
+```
