@@ -12,11 +12,11 @@ Short-lived agent execution contracts. Persist only via the backend selected by 
 
 1. Start from approved conversation or spec. Missing user-owned decision -> `grill-me`.
 2. Ticket only **production-code behavior** slices. Docs, agent-policy, process notes, and no-behavior chores -> parent handles after user approval; no ticket/worker. If a code slice needs a short human doc touch, keep it on the parent path or fold a one-line acceptance note into the code ticket.
-3. Split to the **smallest independently verifiable vertical behavior**. Cross only needed layers.
+3. Split to the **smallest independently verifiable vertical behavior**. Cross only needed layers. A follow-up named by engineering-workflow Review And Complete stays one ticket.
 4. Name the **seam** in Contract: the crate or module that owns the behavior and the public operations to call. If tests already assert that behavior, name them — they are the _oracle_. Omit line numbers and implementation scripts. Workers close from that seam; after reading it they write a _red_ test.
 5. Context budget: aim **well below 150k**. Near/over 150k -> try further split if still independently verifiable. Cannot split -> keep one ticket, `Context risk: high` + reason.
 6. Real `Blocked by` only. Prefer low write-conflict parallel frontier when no behavior dependency.
-7. Show user: title, blockers, `Parallel`, high context risk, outcome, seam, acceptance, worker command. Revise until approved, then persist. Scratch: `.scratch/<effort>/tickets/<NN>-<slug>.md`.
+7. Show the user the behavior and scope they can judge: title, outcome, acceptance, and any user-owned boundary. Revise until they confirm, then persist. The ticket is for the worker. Scratch: `.scratch/<effort>/tickets/<NN>-<slug>.md`.
 
 Parent owns scheduling (which ticket, serial/parallel, worktree).
 
@@ -41,7 +41,6 @@ Context risk: normal | high
 
 ## Validation
 <worker command with exit code>
-<parent-owned user flow, if the worker cannot close it>
 
 ## Boundaries
 <work that remains on later tickets or the parent>
@@ -50,16 +49,14 @@ Context risk: normal | high
 - `Parallel: ok` -> parent may co-run with other `ok` tickets when write surfaces look disjoint.
 - `serial` -> possible contention on same files / generated artifacts / migrations / contract entrances / brittle shared fixtures.
 - Omit `Context risk` when normal. If `high`, say why it cannot shrink; fold impl-relevant limits into `Boundaries`/`Contract`.
-- Worker Validation is a package-scoped command, quiet when the toolchain allows. Parent-owned visual or manual flows stay on the ticket as parent work; the worker stops on the command.
+- Worker Validation is a package-scoped command, quiet when the toolchain allows. The worker stops on that command.
 
 ## Dispatch
 
 Frontier: `ready-for-agent` + all blockers `done`. Status is only those two values.
 
-After persist, run `/implement-ticket <ticket-path>`. Pass the path through `reads`. Also `reads`: `.agents/constraints.md` when present, plus backend-declared context paths.
+After persist, run `/implement-ticket <ticket-path>`. A follow-up uses that template's follow-up resume. Pass the path through `reads`. Also `reads`: `.agents/constraints.md` when present, plus backend-declared context paths.
 
 Children read the ticket file. Parent keeps Status, Blocked by, Parallel, siblings, and board/orchestration out of the child prompt.
-
-Worker returns evidence; the template's reviewer inspects. Parent marks `done` from that pair when the reviewer reports no blockers, then commits the files the worker listed. A parent-owned user-flow runs only when the ticket names one.
 
 Broad incompatible migrations -> expand-contract order, not broken vertical slices.

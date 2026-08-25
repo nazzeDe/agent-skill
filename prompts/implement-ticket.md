@@ -1,15 +1,15 @@
 ---
-description: Dispatch one approved ticket to a fresh worker, then a fresh reviewer
+description: Dispatch one approved ticket to a fresh pair, or resume the just-closed pair for a follow-up
 argument-hint: "<ticket-path>"
 ---
 
 Run this as orchestrator. Production code stays in the child sessions. The ticket file is the child's planning document.
 
-Read `writing-for-agents` before sending the child task. Goal names the ticket Outcome; Context names the seam; Success includes the worker command and a deep module. You may substitute those Goal/Context lines from the ticket; keep the rest of this contract. Call `subagent` once with `workflowScript` below. Add backend-declared extra `reads` when the selected artifact backend names them.
+Read `writing-for-agents` before sending the child task. Goal names the ticket Outcome; Context names the seam; Success includes the worker command and a deep module. You may substitute those Goal/Context lines from the ticket; keep the rest of this contract. Add backend-declared extra `reads` when the selected artifact backend names them. When the ticket meets the `diagnose-bug` trigger, append `diagnose-bug` to the worker `skill` array.
 
 Ticket path: `$1`
 
-Use `async: true` and `context: "fresh"`. Missing `.agents/constraints.md` is fine; `reads` skips absent files.
+**Fresh pair.** Call `subagent` once with `workflowScript` below. Use `async: true` and `context: "fresh"`. Missing `.agents/constraints.md` is fine; `reads` skips absent files.
 
 ```javascript
 const ticket = "$1";
@@ -51,7 +51,7 @@ const review = await runs.run("review", {
 return { worker: worker.output, review: review.output };
 ```
 
-Keep the workflow's `impl` and `review` run ids. After it returns, follow `engineering-workflow` Review And Complete. Resume with the contracts below; do not start a new pair.
+Keep the workflow's `impl` and `review` run ids. After it returns, follow `engineering-workflow` Review And Complete. `Blocker` work uses the contracts below.
 
 Resume worker when Review And Complete says any `Blocker`. Interpolate the review text. `async: true`.
 
@@ -89,3 +89,10 @@ return runs.run("review", {
   ].join("\n")
 });
 ```
+
+**Follow-up.** Review And Complete names a follow-up: call `subagent` once with the fresh-pair `workflowScript`, these substitutions applied. Resume the just-closed ids. Interpolate the new ticket path. `async: true`. After it returns, follow Review And Complete.
+
+- `impl`: `resume: IMPL_RUN_ID`. Omit `agent`, `context`, and `phase`.
+- `review`: `resume: REVIEW_RUN_ID`. Omit `agent`, `context`, and `phase`.
+- Worker Context: `this ticket file is the planning document. You already implemented this seam. Start from that context and this problem statement.`
+- Keep `reads`, `skill`, and the rest of each task.

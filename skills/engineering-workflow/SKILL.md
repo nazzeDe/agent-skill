@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 This skill is for the **orchestrator** identity only. Documentation and agent-policy files stay with the parent after user approval; they do not take tickets or workers.
 
-The parent session does not modify production code. `/implement-ticket` starts a fresh worker and a fresh reviewer. Later `Blocker` work resumes that pair; see Review And Complete.
+The parent session does not modify production code. `/implement-ticket` starts a fresh worker and a fresh reviewer. `Blocker` work and a follow-up resume that pair; see Review And Complete.
 
 ## 0. Select Artifact Backend
 
@@ -28,7 +28,7 @@ An approved ticket authorizes implementation within its stated behavior and boun
 - Multiple slices or important cross-boundary behavior: use `to-spec`, then `to-tickets`.
 - Unresolved decisions: `grill-me`, and `research` or `prototype` when evidence is needed. Use `handoff` for multi-session continuity.
 
-Show every proposed spec and ticket to the user before writing it. Persist approved agent artifacts through the selected local backend. Never add agent-only material to public documentation or Git. Delete temporary artifacts when their work is complete or their durable content has been approved and moved into human-facing documentation.
+Show the user the behavior and scope they can judge before persisting a spec or ticket. The artifact is for the agent. Persist approved agent artifacts through the selected local backend. Never add agent-only material to public documentation or Git. Delete temporary artifacts when their work is complete or their durable content has been approved and moved into human-facing documentation.
 
 Access remote collaboration systems only when the user explicitly requests or permits it this turn. Default is local git only. With authorization, the parent may push and open a PR per [GIT.md](GIT.md). The user still owns merge and, unless separately authorized, issue/label/reviewer changes.
 
@@ -47,12 +47,12 @@ Default: shared repo, no worktree.
 
 The first pair is fresh via `agentOverrides`. Parent keeps Status, Blocked by, Parallel, and worktree decisions.
 
-Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
+Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Specialized Routes may add `diagnose-bug`. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
 
 ## 4. Specialized Routes
 
 - Ordinary reproducible bugs: the normal ticket path with a minimal failing signal and regression protection.
-- Complex bugs meeting the `diagnose-bug` trigger: load that skill.
+- Complex bugs meeting the `diagnose-bug` trigger: add that skill to the worker. The ticket is the problem statement; the worker runs the loop.
 - Interface alternatives: load `design-an-interface`; it uses `deep-module-design` as its rubric.
 - Logic or UI uncertainty that needs executable evidence: use `prototype`. Prototype code never becomes production code.
 - Explicit architecture review: use `improve-codebase-architecture`.
@@ -65,11 +65,11 @@ Source-code commits follow [GIT.md](GIT.md). Parent owns branch/commit/push/PR d
 
 `/implement-ticket` starts one fresh worker (`impl`) and one fresh, read-only reviewer (`review`). Keep those run ids. Specialist reviewers only for material risks such as security, performance, concurrency, complex UI, or migration. Specialist `Blocker`s use the same `impl` pair.
 
-Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment.
+Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment. `done` means this pair finished the ticket.
 
 Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` / `Note`. A user-owned decision (behavior, scope, public contract, cost, compatibility, migration, security, risk) is an escalate, not a private child choice.
 
-1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](GIT.md). Run a parent-owned user-flow only when the ticket names one. Wait for user acceptance when that flow is the acceptance criterion. Done when the reviewer reported no `Blocker`.
+1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](GIT.md). Speak the user-observable behaviors this slice delivers — spec Acceptance for this slice, or the behavior and scope already confirmed when there is no spec. Then schedule from `Parallel` plus conflict judgment. Done when the ticket is `done`, those files are committed, and the user has been told those behaviors.
 2. Any `Blocker`: `resume` `impl` with the full review text and the `/implement-ticket` resume-worker contract. Done when the worker accounts for every `Blocker` — fix, evidenced reject, or escalate.
 3. After that worker return:
    - user-owned escalate → ask the user. Stop.
@@ -79,3 +79,11 @@ Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` 
 5. Still a `Blocker` and no progress — the same `Blocker` stands after an evidenced reject, or step 3 already stopped → ask the user. The next writer is that same `impl` only after the user says so.
 
 Reviewer output is findings only. Completion is those child signals plus [GIT.md](GIT.md) staging/message/hooks when committing.
+
+### User report
+
+A report after `done` is new work. Load `grill-me` for missing user-owned facts; explore the repository for the rest. After consensus on behavior and scope, write a new ticket (`to-tickets`) whose Outcome is that **problem statement**: symptom, expected vs actual, reproduction.
+
+A **follow-up** is a report, in this conversation, that the behaviors just spoken did not hold. Every follow-up from that verification goes on one new ticket. Resume the just-closed `impl` and `review` with the `/implement-ticket` follow-up contract. The new ticket is the planning document.
+
+Any other report starts a fresh pair via `/implement-ticket`.
