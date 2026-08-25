@@ -55,7 +55,7 @@ Context risk: normal | high
 
 Frontier: `ready-for-agent` + all blockers `done`. Status is only those two values.
 
-After persist, run `/implement-ticket <ticket-path>`. A follow-up uses that template's follow-up resume. Pass the path through `reads`. Also `reads`: `.agents/constraints.md` when present, plus backend-declared context paths.
+After persist, dispatch per engineering-workflow Implement and Review And Complete. A follow-up uses the adapter follow-up resume. Pass the path through `reads`. Also `reads`: `.agents/constraints.md` when present, plus backend-declared context paths.
 
 Children read the ticket file. Parent keeps Status, Blocked by, Parallel, siblings, and board/orchestration out of the child prompt.
 

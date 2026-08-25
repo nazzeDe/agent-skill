@@ -32,7 +32,7 @@ A backend may define only:
 
 A backend must not change:
 
-- implementer versus orchestrator identity, or `/implement-ticket` dispatch;
+- implementer versus orchestrator identity, or ticket dispatch;
 - user approval gates;
 - public behavior or scope decisions;
 - TDD and diagnostic routing;
