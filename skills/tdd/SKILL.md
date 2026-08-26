@@ -1,13 +1,13 @@
 ---
 name: tdd
-description: Behavior-focused test-driven development for approved production-code changes when a test can protect a regression.
+description: Tests that protect behavior through a stable seam when a test can protect a regression.
 ---
 
-# Test-Driven Development
+# Tests That Protect Behavior
 
-Use TDD when a test can protect observable behavior or a stable contract from a plausible regression. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
+Use this when a test can protect observable behavior or a stable contract from a plausible regression. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
 
-## Test Value
+## Test value
 
 A valuable test:
 
@@ -17,30 +17,25 @@ A valuable test:
 - is deterministic and adds coverage not already protected more effectively;
 - communicates a behavior, invariant, or failure rule.
 
-The test surface is that public seam. Production code hides complexity behind the same contract; apply `deep-module-design` when shaping or reviewing the module.
+The test surface is that public seam. Production code hides complexity behind the same contract; apply `deep-module-design` when shaping the module.
 
-## Before The Loop
+## Seam
 
 The ticket (or approved direction) defines behavior and boundaries. Choose test level, fixtures, and internal structure. Escalate only if testing needs a new public contract or other user-owned decision.
 
 Start in the crate or module the ticket names. Read that seam and existing tests that already call the same public API. Reuse their fixtures. Internals are a deep module behind that seam.
 
-If those tests already assert the behavior to keep, they are the _oracle_: Green is those assertions still true.
-
-This step is done when the next action is a _red_ test. A compiler or test error then names the next unread file.
+If those tests already assert the behavior to keep, they are the _oracle_: those assertions still hold.
 
 Prefer real collaborators when they are _tight_ (fast, deterministic, cheap to construct). Use a test double when the real dependency is external, slow, nondeterministic, destructive, expensive, or needed to reproduce a rare failure. Dependency injection and adapters are techniques, not defaults.
 
-## Red, Green, Refactor
+This step is done when the seam, oracle tests, and collaborators for the next behavior are identified.
 
-Work vertically, one behavior at a time. The loop starts when a test is _red_.
+## Tests
 
-1. **Red:** add the smallest valuable test and observe the intended failure.
-2. **Green:** make that behavior true. Shape internals as a deep module behind the seam.
-3. Repeat for the next approved behavior.
-4. **Refactor:** only while green; apply `code-quality` and `deep-module-design` to the seam, then rerun focused tests.
+Work vertically, one approved behavior at a time. How tests are written is the agent's choice. Each behavior needs valuable tests through the seam before the slice is done.
 
-A test should focus on one behavior. It may contain multiple related assertions needed to prove that behavior.
+While those tests pass, apply `code-quality` and `deep-module-design` to the seam, then rerun focused tests.
 
 ## Completion
 

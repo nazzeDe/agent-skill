@@ -8,13 +8,15 @@ disable-model-invocation: true
 
 This session does not modify production code. Documentation and agent-policy files stay here after user approval; they do not take tickets or workers.
 
-Dispatch starts a fresh worker and a fresh reviewer. `Blocker` work and a follow-up resume that pair; see Review And Complete. Spawn, resume, and follow-up: [pi.md](pi.md) when this session has `subagent` `workflowScript`; [claude.md](claude.md) when this session has the `Agent` tool. Another harness adds a sibling adapter.
+Dispatch starts a fresh worker and a fresh reviewer. `Blocker` work resumes that pair; a follow-up starts a fresh pair. See Review And Complete. Spawn, resume, and follow-up: [pi.md](pi.md) when this session has `subagent` `workflowScript`; [claude.md](claude.md) when this session has the `Agent` tool. Another harness adds a sibling adapter.
+
+This session talks to the user. The `verify` reviewer talks to the worker.
 
 ## 0. Select Artifact Backend
 
 Read [ARTIFACT-BACKENDS.md](../../ARTIFACT-BACKENDS.md). Default to `.scratch`. Activate a project provider only through a valid `.agents/artifact-backend.json`; a tool-specific directory alone never activates one.
 
-Select the backend once for the effort. Pass any provider-declared child context paths through dispatch `reads`, together with the ticket path and `.agents/constraints.md` when that file exists. `.agents/constraints.md` holds repo-wide pins (language/version, gate commands, forbidden stacks). Slice behavior stays in the ticket. Missing constraints file: ticket plus code closure only.
+Select the backend once for the effort. Pass any provider-declared child context paths through dispatch `reads`, together with the ticket path and `.agents/constraints.md` when that file exists. `.agents/constraints.md` holds repo-wide pins (language/version, gate commands, forbidden stacks). Quality gates are the commands under a `Quality gates` heading in that file. Slice behavior stays in the ticket. Missing constraints file: ticket plus code closure only.
 
 ## 1. Resolve Decisions
 
@@ -47,7 +49,7 @@ Default: shared repo, no worktree.
 
 The first pair is fresh. Parent keeps Status, Blocked by, Parallel, and worktree decisions.
 
-Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Specialized Routes may add `diagnose-bug`. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
+Worker skills: `tdd`, `code-quality`, and `deep-module-design` from the start. Reviewer skill: `verify`. Specialized Routes may add `diagnose-bug` to the worker. Use `tdd` when a valuable regression test exists. For wiring, formatting, declarative configuration, or behavior-free changes, use the strongest relevant validation instead.
 
 ## 4. Specialized Routes
 
@@ -67,10 +69,16 @@ Dispatch starts one fresh worker (`impl`) and one fresh, read-only reviewer (`re
 
 Tickets have only `ready-for-agent` and `done`. `Blocked by` is separate. Parent schedules from `Parallel` plus conflict judgment. `done` means this pair finished the ticket.
 
-Route on `Blocker` presence and _progress_. Findings stay `Correct` / `Blocker` / `Note`. A user-owned decision (behavior, scope, public contract, cost, compatibility, migration, security, risk) is an escalate, not a private child choice.
+The worker generates a finished slice: Outcome, Contract, Acceptance, Validation, and a deep module. The reviewer **verifies** those claims and any pinned quality gates.
+
+Reviewer findings stay `Correct` / `Blocker` / `Note`. A **Blocker** is only: a pinned quality gate exited non-zero; an Acceptance or Contract item has no test that pins it; a test cannot fail for the defect it claims; the Validation command does not exercise that behavior. Notes are residual risk. A user-owned decision (behavior, scope, public contract, cost, compatibility, migration, security, risk) is an escalate, not a private child choice.
+
+Speak behaviors and user-owned questions. Leave verify output, worker residual risks, and diffs in the child transcripts.
+
+Route on `Blocker` presence and _progress_. Resume the same pair only while the ticket contract is unchanged. If Outcome, Contract, or scope changed, dispatch a fresh pair.
 
 1. No `Blocker` (clean or `Note` only): mark the ticket `done` and commit the files the worker listed per [GIT.md](../../GIT.md). Speak the user-observable behaviors this slice delivers — spec Acceptance for this slice, or the behavior and scope already confirmed when there is no spec. Then schedule from `Parallel` plus conflict judgment. Done when the ticket is `done`, those files are committed, and the user has been told those behaviors.
-2. Any `Blocker`: `resume` `impl` with the full review text and the adapter resume-worker contract. Done when the worker accounts for every `Blocker` — fix, evidenced reject, or escalate.
+2. Any `Blocker`: `resume` `impl` with those Blockers and gate failure output, and the adapter resume-worker contract. Done when the worker accounts for every `Blocker` — fix, evidenced reject, or escalate.
 3. After that worker return:
    - user-owned escalate → ask the user. Stop.
    - no changed files and no evidenced reject for each `Blocker` → ask the user. Stop.
@@ -84,6 +92,6 @@ Reviewer output is findings only. Completion is those child signals plus [GIT.md
 
 A report after `done` is new work. Load `grill-me` for missing user-owned facts; explore the repository for the rest. After consensus on behavior and scope, write a new ticket (`to-tickets`) whose Outcome is that **problem statement**: symptom, expected vs actual, reproduction.
 
-A **follow-up** is a report, in this conversation, that the behaviors just spoken did not hold. Every follow-up from that verification goes on one new ticket. Resume the just-closed `impl` and `review` with the adapter follow-up contract. The new ticket is the planning document.
+A **follow-up** is a report, in this conversation, that the behaviors just spoken did not hold. Every follow-up from that verification goes on one new ticket. Dispatch a **fresh** `impl` and `review` with the adapter fresh-pair contract. The new ticket is the planning document.
 
 Any other report starts a fresh pair.

@@ -13,24 +13,26 @@ Do not `fork` the parent. Each child is a new `Agent` so the reviewer does not i
 ```
 Goal: implement the approved ticket Outcome as a deep module in the seam the ticket names.
 Context: the ticket file is the planning document. Start in the named seam. Read TICKET_PATH. Read .agents/constraints.md when it exists for repo pins.
-Success: Outcome, Contract, and Acceptance hold. The worker Validation command exits 0. Callers see a small contract; complexity stays inside; tests use that contract.
-Work: read the ticket and the named seam. The next action is a _red_ test. A compile or test error names the next file. Shape the module with tdd, code-quality, and deep-module-design as you go.
+Success: Outcome, Contract, and Acceptance hold. The worker Validation command exits 0. When constraints.md names Quality gates, those commands exit 0. Callers see a small contract; complexity stays inside; tests use that contract.
+Work: read the ticket and the named seam. Tests through that contract fail for a plausible defect. Shape the module with tdd, code-quality, and deep-module-design as you go.
 At a boundary: escalate unapproved user-owned decisions; keep the diff on the ticket seam.
-Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows.
+Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows. Run Quality gates from constraints.md when that heading exists.
 Output: Implemented / Changed files / Validation / Residual risks / Module depth.
-Stop when: the Validation command exits 0, Acceptance holds, and the changed module is deep, or a user-owned decision is required.
+Stop when: the Validation command exits 0, Acceptance holds, pinned Quality gates exit 0, and the changed module is deep, or a user-owned decision is required.
 ```
 
-2. `Agent`: `name: review`, `subagent_type: general-purpose`, `description: Review ticket`. Reviewer loads skills `code-quality` and `deep-module-design`. Prompt includes the worker output. If a project or user agent named `review` exists with Write/Edit denied, use that `subagent_type` instead of `general-purpose`. Prompt:
+2. `Agent`: `name: review`, `subagent_type: general-purpose`, `description: Verify ticket`. Reviewer loads skill `verify`. Prompt includes the worker output. If a project or user agent named `review` exists with Write/Edit denied, use that `subagent_type` instead of `general-purpose`. Prompt:
 
 ```
-Goal: review the worker change against the ticket contract and module depth.
+Goal: verify the worker change against the ticket contract, acceptance, tests, and pinned quality gates.
 Context: ticket TICKET_PATH. Worker evidence: <worker output>
 In-scope: the ticket and the files the worker changed.
-Success: Correct / Blocker / Note with file evidence, ordered by impact. Depth: small contract, hidden complexity, tests through that contract.
-Work: read those files, their tests, callers, and definitions of changed symbols. One hop follows a symbol the diff uses (or that uses the diff) to verify a finding.
+Success: Correct / Blocker / Note with file or command evidence, ordered by impact. A Blocker is only: a pinned quality gate exited non-zero; an Acceptance or Contract item has no test that pins it; a test cannot fail for the defect it claims; the Validation command does not exercise that behavior.
+Work: load verify. Read the ticket, the tests that claim those behaviors, and the code needed to check the claims. Run the ticket Validation command and every Quality gates command in constraints.md.
 At a boundary: return a finding. Project files stay unchanged. Do not call Write, Edit, or NotebookEdit.
-Stop when: findings are evidence-backed, or the change matches the contract and is deep.
+Validation: run the ticket worker command and pinned Quality gates.
+Output: Correct / Blocker / Note.
+Stop when: every Acceptance item is Correct or a Blocker, and every pinned gate has a result.
 ```
 
 Keep those `name`s. After both return, follow Review And Complete.
@@ -39,11 +41,11 @@ Keep those `name`s. After both return, follow Review And Complete.
 
 ```
 Goal: account for every Blocker in the review. Fix a real defect, reject a misread with file evidence, or escalate a user-owned decision.
-Context: the ticket is still the planning document. You already implemented this seam. Full review: <REVIEW_TEXT>
-Success: each Blocker is fixed, rejected with file evidence, or escalated. If you changed code, the worker Validation command exits 0. Callers still see the same small contract.
-Work: read each Blocker. The next action for a real defect is a _red_ test. Shape the fix with tdd, code-quality, and deep-module-design as you go.
+Context: the ticket is still the planning document. You already implemented this seam. Blockers: <REVIEW_TEXT>
+Success: each Blocker is fixed, rejected with file evidence, or escalated. If you changed code, the worker Validation command exits 0 and pinned Quality gates exit 0. Callers still see the same small contract.
+Work: read each Blocker. Tests through the seam fail for a plausible defect. Shape the fix with tdd, code-quality, and deep-module-design as you go.
 At a boundary: escalate unapproved user-owned decisions; keep the diff on the ticket seam.
-Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows.
+Validation: run the ticket worker command, package-scoped and quiet when the toolchain allows. Run Quality gates from constraints.md when that heading exists.
 Output: Fixed / Rejected / Escalated / Changed files / Validation.
 Stop when: every Blocker is accounted for, or a user-owned decision is required.
 ```
@@ -51,13 +53,15 @@ Stop when: every Blocker is accounted for, or a user-owned decision is required.
 When the worker made progress, `SendMessage({to: "review"})`:
 
 ```
-Goal: re-review the worker response against the ticket contract and the prior Blockers.
+Goal: re-verify the worker response against the ticket contract, acceptance, tests, pinned quality gates, and the prior Blockers.
 Context: ticket TICKET_PATH. Worker evidence: <WORKER_TEXT>
 In-scope: the ticket, the prior Blockers, and the files the worker changed.
-Success: Correct / Blocker / Note with file evidence, ordered by impact. Withdraw a Blocker the worker refuted. Keep a Blocker only with remaining file evidence. Depth: small contract, hidden complexity, tests through that contract.
-Work: read those files, their tests, callers, and definitions of changed symbols. One hop follows a symbol the diff uses (or that uses the diff) to verify a finding.
+Success: Correct / Blocker / Note with file or command evidence, ordered by impact. Withdraw a Blocker the worker refuted. Keep a Blocker only with remaining file evidence. A Blocker is only: a pinned quality gate exited non-zero; an Acceptance or Contract item has no test that pins it; a test cannot fail for the defect it claims; the Validation command does not exercise that behavior.
+Work: load verify. Read the ticket, the tests that claim those behaviors, and the code needed to check the claims. Run the ticket Validation command and every Quality gates command in constraints.md.
 At a boundary: return a finding. Project files stay unchanged. Do not call Write, Edit, or NotebookEdit.
-Stop when: findings are evidence-backed, or the remaining change matches the contract and is deep.
+Validation: run the ticket worker command and pinned Quality gates.
+Output: Correct / Blocker / Note.
+Stop when: every Acceptance item is Correct or a Blocker, and every pinned gate has a result.
 ```
 
-**Follow-up.** Review And Complete names a follow-up: `SendMessage({to: "impl"})` then, after it returns, `SendMessage({to: "review"})`. New ticket path replaces `TICKET_PATH`. Worker Context becomes: `this ticket file is the planning document. You already implemented this seam. Start from that context and this problem statement.` Keep the rest of the fresh-pair prompts.
+**Follow-up.** Review And Complete names a follow-up: start a new fresh pair (`Agent` `impl`, then `Agent` `review`) with the fresh-pair prompts. New ticket path replaces `TICKET_PATH`. Do not `SendMessage` the just-closed pair.
