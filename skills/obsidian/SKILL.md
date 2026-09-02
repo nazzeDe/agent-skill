@@ -1,6 +1,7 @@
 ---
 name: obsidian
 description: 处理有关 Obsidian 的一切问题
+disable-model-invocation: true
 ---
 
 # Obsidian Vault

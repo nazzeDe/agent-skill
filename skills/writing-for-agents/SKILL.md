@@ -1,11 +1,12 @@
 ---
 name: writing-for-agents
-description: Writing any document an agent will load.
+description: Writing documents for agents.
+disable-model-invocation: true
 ---
 
-Reference for writing any document an agent consumes. The packaging differs; the writing does not: the same levers make each one predictable, since the agent takes the same _process_ every run rather than producing the same output.
+Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, a doc reached by a pointer, a subagent task. The packaging differs; the writing does not: the same levers make each one predictable, since the agent takes the same _process_ every run rather than producing the same output.
 
-When the document is a skill, read [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) for frontmatter, invocation choice, and router skills. When it is a child task or review prompt, read [`TASK.md`](TASK.md). Spec and ticket shapes live in `to-spec` and `to-tickets`; this file is the writing.
+When the document you're writing is a skill, read [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) for frontmatter, invocation choice, and router skills.
 
 ## Context pointers
 

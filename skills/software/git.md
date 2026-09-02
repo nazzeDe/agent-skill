@@ -7,7 +7,7 @@
 
 ## Commit
 
-- Stage only files for that delivery. Exclude `.scratch/`, agent-only artifacts, and unrelated dirty files. Suspicious extra changes -> ask the user.
+- Stage only files for that delivery. Exclude `.agents/`, agent-only artifacts, and unrelated dirty files. Suspicious extra changes -> ask the user.
 - Message: follow repo convention (commitlint, CONTRIBUTING, recent style). If none: Conventional Commits `type(scope): summary` with optional body (why / ticket id). Types: `feat|fix|refactor|test|docs|perf|chore|...`. Breaking: `!` or footer.
 - Run repo hooks. Hook failure -> fix or ask; do not `--no-verify` unless the user explicitly authorizes it.
 

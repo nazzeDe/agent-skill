@@ -2,6 +2,7 @@
 name: compressed-communication
 description: >
   简洁沟通模式。用短句、直接结论和高信息密度表达。用户要求说话简洁时使用。
+disable-model-invocation: true
 ---
 
 用高压缩工程沟通方式回答。保留全部技术实质，减少铺垫、重复、客套和低信息密度表达。
