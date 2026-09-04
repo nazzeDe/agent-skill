@@ -9,6 +9,7 @@ ITEMS=(
   "code-review|engineering/code-review"
   "codebase-design|engineering/codebase-design"
   "diagnosing-bugs|engineering/diagnosing-bugs"
+  "improve-codebase-architecture|engineering/improve-codebase-architecture"
   "implement|engineering/implement"
   "prototype|engineering/prototype"
   "tdd|engineering/tdd"
