@@ -9,7 +9,7 @@
       "skillFolderHash": "0a11fad96d4e90d6dc0e73071f2457d0975ae12a",
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-10-31T08:15:10.890Z",
-      "updatedAt": "2026-10-31T08:15:10.890Z"
+      "updatedAt": "2026-11-03T02:44:03.790Z"
     },
     "grill-with-docs": {
       "source": "vinvcn/mattpocock-skills-zh-CN",
@@ -19,7 +19,7 @@
       "skillFolderHash": "30e3937ecf5b632e6c0b7b55ff4120fb68d03c03",
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-10-31T08:15:10.891Z",
-      "updatedAt": "2026-10-31T08:15:10.891Z"
+      "updatedAt": "2026-11-03T02:44:03.790Z"
     },
     "grilling": {
       "source": "vinvcn/mattpocock-skills-zh-CN",
@@ -29,7 +29,7 @@
       "skillFolderHash": "14752e568c3b2272cf442149d9231c24215049ce",
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-10-31T08:15:10.891Z",
-      "updatedAt": "2026-10-31T08:15:10.891Z"
+      "updatedAt": "2026-11-03T02:44:03.790Z"
     },
     "handoff": {
       "source": "vinvcn/mattpocock-skills-zh-CN",
@@ -39,7 +39,7 @@
       "skillFolderHash": "5be7fc8bfcca20b1aab65727d689e91a6fd77410",
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-10-31T08:15:10.892Z",
-      "updatedAt": "2026-10-31T08:15:10.892Z"
+      "updatedAt": "2026-11-03T02:44:03.790Z"
     },
     "retro": {
       "source": "vinvcn/mattpocock-skills-zh-CN",
@@ -59,7 +59,7 @@
       "skillFolderHash": "120adf50dd93b0fa635282302b8a0f7e7833a1aa",
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-10-31T08:15:10.892Z",
-      "updatedAt": "2026-10-31T08:15:10.892Z"
+      "updatedAt": "2026-11-03T02:44:03.791Z"
     },
     "find-skills": {
       "source": "vercel-labs/skills",
@@ -69,6 +69,185 @@
       "skillFolderHash": "76a98a285cb0434f3d39e1a873823556330e398b",
       "installedAt": "2026-10-31T08:15:31.467Z",
       "updatedAt": "2026-10-31T08:15:31.467Z"
+    },
+    "writing-for-agents": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/productivity/writing-for-agents/SKILL.md",
+      "skillFolderHash": "f353ffeddec162d72f3d2d376f93f4b18cc9bbf6",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-02T06:16:13.640Z",
+      "updatedAt": "2026-11-03T02:44:03.793Z"
+    },
+    "code-review": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "skillFolderHash": "be0b33f2a9c3851e9c38b94ceecd8cda37195ff4",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.787Z",
+      "updatedAt": "2026-11-03T02:44:03.787Z"
+    },
+    "codebase-design": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/codebase-design/SKILL.md",
+      "skillFolderHash": "2859888edb97640b2bf85456117dcdcfba49c5a5",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.788Z",
+      "updatedAt": "2026-11-03T02:44:03.788Z"
+    },
+    "diagnosing-bugs": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "skillFolderHash": "f6498cf6a2a9d2251bd7ade7973297627ba3ecb0",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.788Z",
+      "updatedAt": "2026-11-03T02:44:03.788Z"
+    },
+    "domain-modeling": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/domain-modeling/SKILL.md",
+      "skillFolderHash": "2c227492f1dd8da49d0ac53804fb981cb4eaf957",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.789Z",
+      "updatedAt": "2026-11-03T02:44:03.789Z"
+    },
+    "implement": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/implement/SKILL.md",
+      "skillFolderHash": "6934754ca10a5112229aaff239d06fc8aaaf4b8c",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.789Z",
+      "updatedAt": "2026-11-03T02:44:03.789Z"
+    },
+    "implement-spec": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/implement-spec/SKILL.md",
+      "skillFolderHash": "3f2391b4035845ab8a3eca45d01d59794f0cafe5",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.789Z",
+      "updatedAt": "2026-11-03T02:44:03.789Z"
+    },
+    "improve-codebase-architecture": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "skillFolderHash": "d06cea3232d16e748a734a184abaa313933ef5b9",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.790Z",
+      "updatedAt": "2026-11-03T02:44:03.790Z"
+    },
+    "pr": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/pr/SKILL.md",
+      "skillFolderHash": "bc66e7de79661e07ce40eecda1cefd602309e163",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.791Z",
+      "updatedAt": "2026-11-03T02:44:03.791Z"
+    },
+    "prototype": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/prototype/SKILL.md",
+      "skillFolderHash": "a19a09065522233343e159b93ae31b16b789bf9b",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.791Z",
+      "updatedAt": "2026-11-03T02:44:03.791Z"
+    },
+    "setup-matt-pocock-skills": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "skillFolderHash": "54dafab7b68ed9f069b3a02e6d6ddf92927abb14",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.791Z",
+      "updatedAt": "2026-11-03T02:44:03.791Z"
+    },
+    "setup-pre-commit": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/misc/setup-pre-commit/SKILL.md",
+      "skillFolderHash": "0736e46d861d1fd03825b05608f9cb9f92a059ab",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.791Z",
+      "updatedAt": "2026-11-03T02:44:03.791Z"
+    },
+    "tdd": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/tdd/SKILL.md",
+      "skillFolderHash": "16f2b782dbb7664a6006777aecd20dccc185a78d",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.791Z",
+      "updatedAt": "2026-11-03T02:44:03.791Z"
+    },
+    "to-questionnaire": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/productivity/to-questionnaire/SKILL.md",
+      "skillFolderHash": "0b772405a2ec35c5ea061ccc6d88b4c1ae1f5c4f",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.792Z",
+      "updatedAt": "2026-11-03T02:44:03.792Z"
+    },
+    "to-spec": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/to-spec/SKILL.md",
+      "skillFolderHash": "e71b6a573ee5e4c35d2838a46d89e1cdc202bc49",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.792Z",
+      "updatedAt": "2026-11-03T02:44:03.792Z"
+    },
+    "to-tickets": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/to-tickets/SKILL.md",
+      "skillFolderHash": "bc501fbcd00c51c77dcfe527ca45351c6be25236",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T02:44:03.792Z",
+      "updatedAt": "2026-11-03T02:44:03.792Z"
+    },
+    "loop-me": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/in-progress/loop-me/SKILL.md",
+      "skillFolderHash": "03c7db2e5282880986b953edfbe3440faee6fb9e",
+      "installedAt": "2026-11-03T02:44:03.793Z",
+      "updatedAt": "2026-11-03T02:44:03.793Z"
+    },
+    "ask-matt": {
+      "source": "vinvcn/mattpocock-skills-zh-CN",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vinvcn/mattpocock-skills-zh-CN.git",
+      "skillPath": "skills/engineering/ask-matt/SKILL.md",
+      "skillFolderHash": "f0d631dbb23601247068fb80c4aa41049f6e9962",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-11-03T23:02:59.038Z",
+      "updatedAt": "2026-11-03T23:02:59.038Z"
     }
   },
   "dismissed": {
