@@ -15,9 +15,9 @@ disable-model-invocation: true
 3. 在以下类别中寻找改进候选项。
 
 - **Navigation**：agent 找到正确 files 有多容易？files 之间是否存在隐藏依赖？navigation pointer 能否让定位更容易？当 agent 花了很长时间才找到某段信息时使用。
-- **Automated checks**：是否有 automated checks 可以捕获 agent 犯的错误？例如 linting、typing、tests 或 filesystem linters？先阅读 repo 自己的检查命令（`package.json`/build-tool 中的 `lint`/`check` scripts 以及 CI workflow），这样，如果某个检查已经存在但没有接入流程或悄悄失效，真正的发现就是这个问题，而不是重新发明一套检查。若 repo 完全没有 **guardrail**（没有 pre-commit hook，也没有运行 lint/typecheck/test command 的 CI job），这本身就是一项发现：未纳入 lint 的 repo 是长期存在的改进缺口，而不是理所当然的默认状态。当 agent 犯了本来可以被 automated check 捕获的错误，或 repo 完全没有 guardrail 时使用。
-- **Coding standards**：是否应该给 **reviewer agent** 一条新规则来执行？是否应该删除或澄清现有规则？先对违规分类：**mechanical** 违规（固定的语法模式、被禁用的 API、import 形式、文件位置规则）必须交给 deterministic check 处理；根据 repo 使用的语言和现有 guardrail，选择成本最低的方式：在 repo 自己的 linter 中添加自定义规则、新增 pre-commit hook，或新增 CI job。默认优先构建检查，而不是编写规则。`CODING_STANDARDS.md` 只用于真正的 **judgement calls**（跨文件一致性、"matches the surrounding style"，以及任何 guardrail 都无法替代的判断）。当 reviewer agent 没有发现一个错误时使用。
-- **Global AGENTS.md**：是否有 steering instructions 应该移到 coding standards 或 automated checks？当 repo 或用户 global scope 中的 AGENTS.md 特别庞大时使用。
+- **Automated checks（Static Gate）**：是否有确定性静态检查可以捕获 agent 犯的错误？例如编译检查、linting、typing、tests、`crapper`、`dryer` 或 AST 规则？先阅读项目的 `./scripts/gate` 及 CI 配置。凡是能用确定性静态工具拦截的问题，一律优先写入 `./scripts/gate` 或 Linter 配置，绝不留给 AI 审查。
+- **Code taste & Comment rules**：是否应该向 `docs/agents/taste.md`（见 `/taste` skill）或 `docs/agents/comment-guidelines.md` 沉淀新规则？先对问题分类：**mechanical** 违规（固定语法模式、被禁用的 API、死代码注释、分步解说注释）必须交给 `./scripts/gate` 中的静态工具处理；`docs/agents/taste.md` 只用于真正的 **语义表达与契约减法判断**（`when -> instead -> why`）。
+- **AGENTS.md 污染清理**：检查项目的 `AGENTS.md` / `CLAUDE.md` 是否混入了工作流编排规则或冗长说明。`AGENTS.md` 只应保留指向 `./scripts/gate`、`GLOSSARY.md`、`docs/agents/taste.md` 的极简环境指针。
 - **Tool economy**：agent 是否进行了可以简化的昂贵 tool calls？是否有特别消耗 tokens 的自定义 tooling（CLI、MCP 等）？当 agent 进行昂贵 tool call 时使用。
 - **No-ops**：steering files 中是否有不改变 agent 行为的 instructions？当 steering files 庞大且难以维护时使用。
 - **Information access**：是否有机会让 agent 获得更多信息？例如把 dev server logs tee 出来，或提供对 third-party services 的 read-only access。当关键的信息对 agent 不可用时使用。
@@ -38,7 +38,7 @@ review agent 承受最小的 context pressure：它收到的是 diff，因此不
 
 你可以访问 repo 中的几个 files：
 
-- `CLAUDE.md`/`AGENTS.md`：这些 files 会被推入在此 repo 工作的任何 agent 的 context window。应当极其节制地使用，通常只放指向其他 files 的 navigation pointers。
-- `CODING_STANDARDS.md`：这个 file 在 review 时读取，而不是 implementation 时读取。如果 standards file 超过 1,000 行，应当在其中加入指向 docs folders 的 **navigation pointers**。
+- `CLAUDE.md`/`AGENTS.md`：会被推入在此 repo 工作的任何 agent 的 context window。必须极度克制，只放指向 `./scripts/gate`、`GLOSSARY.md`、`docs/agents/taste.md` 等环境事实的指针，绝不写入工作流编排规则。
+- `docs/agents/taste.md`：在 `refine` 阶段由 Taste Reviewer 读取，而不在 implementation 时全量加载。
 - Docs：把 docs 当作 reference files，由其他 files 通过 pointers 指向。写新 docs 前先查找已有 docs。
 - Skills：用 skills 承载 docs（因为它们的 description 会进入 agent 的 context window），或用于 user-invoked commands。遵循 `writing-for-agents` skill 中的建议。

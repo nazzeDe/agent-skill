@@ -59,13 +59,8 @@ Report 末尾包含**首选推荐区**：你会先处理哪个 candidate，以�
 
 现在不要提出 interfaces。写完文件后问用户："Which of these would you like to explore?"
 
-### 3. Grilling 循环
+### 3. Align 循环
 
-用户选中 candidate 后，调用 Skill 工具并指定 `grilling`，与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留。
+用户选中 candidate 后，调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`），与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留，并在过程中同步更新 `GLOSSARY.md` 与必要的 `ADR`。
 
-Side effects 随 decisions 成形而内联发生；调用 Skill 工具并指定 `domain-modeling`，让 domain model 保持最新：
-
-- **要用 `GLOSSARY.md` 中不存在的概念命名 deepened module？** 把 term 加入 `GLOSSARY.md`。若文件不存在，按需创建。
-- **对话中打磨了 fuzzy term？** 立即更新 `GLOSSARY.md`。
-- **用户以 load-bearing reason 拒绝了 candidate？** 提议写 ADR，表述为：_"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ 只有当未来 explorer 确实需要该 reason 以避免再次提出同样建议时才提议；跳过临时原因（"not worth it right now"）和显而易见原因。
-- **想探索 deepened module 的 alternative interfaces？** 调用 Skill 工具并指定 `codebase-design`，并使用其中的 design-it-twice parallel sub-agent pattern。
+如果用户想探索 deepened module 的 alternative interfaces，调用 Skill 工具并指定 `codebase-design`，并使用其中的 design-it-twice parallel sub-agent pattern。

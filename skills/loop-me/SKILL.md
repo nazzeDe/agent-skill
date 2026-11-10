@@ -5,7 +5,7 @@ disable-model-invocation: true
 argument-hint: "一个待设计的工作流；也可以留空，让我去找一个"
 ---
 
-调用 Skill 工具并指定 `grilling`，运行一个 stateful session，唯一输出是 **workflow** specs。使用 grilling discipline：持续追问、一次一个问题、每个问题都附推荐答案。围绕下面的 vocabulary 和 goal 来访谈。随着 grilling 解决问题，创建、编辑、删除 specs。
+调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`），运行一个 stateful session，唯一输出是 **workflow** specs。使用 align 的决策树追问纪律：按 frontier 逐轮追问、每个问题附推荐答案。围绕下面的 vocabulary 和 goal 来访谈。随着追问解决问题，创建、编辑、删除 specs。
 
 ## The loop lens
 
@@ -15,7 +15,7 @@ argument-hint: "一个待设计的工作流；也可以留空，让我去找一�
 
 ## Vocabulary
 
-只有当 workflow 需要时才使用 shared language；它不是 checklist。**不要强制任何结构**：除非 grilling 表明需要，否则 workflow 不需要 AI、不需要 checkpoint，也不需要 schedule。
+只有当 workflow 需要时才使用 shared language；它不是 checklist。**不要强制任何结构**：除非 align 追问表明需要，否则 workflow 不需要 AI、不需要 checkpoint，也不需要 schedule。
 
 - **Trigger** - 每次运行的触发物：一个 **event**（新 email、新 issue）或一个 **schedule**（每天早晨）。Event-triggering 通常更高效。
 - **Checkpoint** - human-in-the-loop 点，用户在这里验证或决策。有些 workflows 没有 checkpoint，可自主运行；有些完全不使用 AI。
@@ -24,7 +24,7 @@ argument-hint: "一个待设计的工作流；也可以留空，让我去找一�
 
 ## Definition of done
 
-当 implementer agent 能在不问任何问题的情况下构建它时，workflow spec 才算 done。持续 grilling 到那时；只要还有问题，就不算完成。
+当 implementer agent 能在不问任何问题的情况下构建它时，workflow spec 才算 done。持续追问对齐到那时；只要还有问题，就不算完成。
 
 ## The workspace
 
