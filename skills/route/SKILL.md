@@ -24,7 +24,7 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
   * **本地草稿**：读取 `.scratch/<slug>.md` 或 `.scratch/issue.md`；
   * **GitHub Issue**：当用户提及 `#编号` 或 Issue URL 时，运行 `gh issue view <id>` 拉取正文与评论。
 * **需求对齐与归档**：
-  * 若需求存在模糊点或未决分支，主控在当前会话读取并运行 [`/align`](/home/nazze/.agents/skills/align/SKILL.md)，通过决策树问答与用户对齐（在代码库内自动维护 `GLOSSARY.md`）。
+  * 若需求存在模糊点或未决分支，主控在当前会话读取并运行 [`/align`](/home/nazze/.agents/skills/align/SKILL.md)，通过决策树问答与用户对齐；若涉及领域术语或架构权衡，同步加载 [`/domain-modeling`](/home/nazze/.agents/skills/domain-modeling/SKILL.md) 维护 `GLOSSARY.md` 与 `docs/adr/`。
   * 对齐后若暂不编码或用户要求留档，将确定的核心意图、边界与接口决策写入 `.scratch/<slug>.md`，或用 `gh issue create` / `gh issue edit` 同步至远端。
 
 ## 核心开发管道：`skeleton -> contract -> work -> refine`
@@ -69,6 +69,7 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
 当任务不属于常规编码主流程时，按以下路径路由：
 
 * **项目首次接入工作流** $\to$ 引导用户运行 `/init-project`（`/home/nazze/.agents/skills/init-project/SKILL.md`），通过一轮问答生成项目的 `./scripts/gate` 静态门禁、配置 Linter 注释规则与 Git Hook。
+* **领域建模、术语对齐与 ADR 记录** $\to$ 读取并运行 [`/domain-modeling`](/home/nazze/.agents/skills/domain-modeling/SKILL.md)，构建或更新项目的 `GLOSSARY.md` 与 `docs/adr/`。
 * **复杂缺陷无法复现或根因不明** $\to$ 读取并运行 [`/diagnosing-bugs`](/home/nazze/.agents/skills/diagnosing-bugs/SKILL.md)，先建立能稳定复现失败的最小回路；定位根因后转入 `skeleton` 或 `work`。
 * **需要可运行代码来验证 UI 或状态机设计** $\to$ 使用 [`/handoff`](/home/nazze/.agents/skills/handoff/SKILL.md) 与 [`/prototype`](/home/nazze/.agents/skills/prototype/SKILL.md) 在独立分支制作一次性验证原型，得出结论后带回 `/align` 或 `skeleton`。
 * **用户手动重构代码后沉淀规律** $\to$ 运行 `/taste`（`/home/nazze/.agents/skills/taste/SKILL.md`），将改动提炼为 `when -> instead -> why` 记入 `docs/agents/taste.md`。

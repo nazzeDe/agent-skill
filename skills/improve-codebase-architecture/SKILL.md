@@ -61,6 +61,6 @@ Report 末尾包含**首选推荐区**：你会先处理哪个 candidate，以�
 
 ### 3. Align 循环
 
-用户选中 candidate 后，调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`），与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留，并在过程中同步更新 `GLOSSARY.md` 与必要的 `ADR`。
+用户选中 candidate 后，调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`）与 `domain-modeling`（读取 `/home/nazze/.agents/skills/domain-modeling/SKILL.md`），与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留，并在过程中同步更新 `GLOSSARY.md` 与必要的 `ADR`。
 
 如果用户想探索 deepened module 的 alternative interfaces，调用 Skill 工具并指定 `codebase-design`，并使用其中的 design-it-twice parallel sub-agent pattern。
