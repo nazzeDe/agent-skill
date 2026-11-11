@@ -1,6 +1,6 @@
 # Phase 边界
 
-**phase** 是 session 内的一段工作：align（对齐）、skeleton（锁骨）、work（实现）、refine（提纯）。这个定义刻意模糊：当你冒出 "行，这个做完了" 的想法时，一个 phase 就结束了。
+**phase** 是 session 内的一段工作：`align`（意图对齐）、`skeleton`（类型与接口签名）、`work`（代码实现）、`refine`（审查与重构）。这个定义刻意模糊：当你冒出 "行，这个做完了" 的想法时，一个 phase 就结束了。
 
 **phase boundary** 是两个 phase 之间的间隙，也是这个决定唯一该出现的地方。phase 中途没有决定要做：要么继续，要么把剩余的工作拆成 subagents。在 phase 中途 compact 会让 agent 丢失线索。
 

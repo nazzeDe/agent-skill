@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # 初始化代码项目（Init Project）
 
-通过一次探查与一轮问答，将项目的硬性工程要求固化为可执行的**静态门禁脚本（Static Gate）**与 Linter 配置，把一切可静态判定的检查锁死在工具层。
+通过一次探查与一轮问答，将项目的硬性工程要求固化为可执行的**静态门禁脚本（Static Gate）**与 Linter 配置，将所有可静态判定的检查固化在工具层。
 
 ## 探查项目现状
 
@@ -56,5 +56,5 @@ disable-model-invocation: true
 
 按用户确认的方案写入 Linter 配置、`./scripts/gate`、`docs/agents/comment-guidelines.md`（源自 [`COMMENT-GUIDELINES.md`](COMMENT-GUIDELINES.md)）及环境指针：
 
-* **执行冒烟验证**：立即运行 `./scripts/gate`，验证脚本可执行且在当前工作区正常跑通（若已有代码触发阈值警告，向用户报告具体输出）。
+* **验证门禁脚本（Smoke Test）**：立即运行 `./scripts/gate`，验证脚本可执行且在当前工作区正常通过（若已有代码触发阈值警告，向用户报告具体输出）。
 * **完成判据**：所有配置文件与脚本已落盘，`./scripts/gate` 实跑验证完成。
