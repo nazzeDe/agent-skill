@@ -1,7 +1,6 @@
 ---
 name: taste
 description: 把代码改动沉淀成口味条目
-disable-model-invocation: true
 ---
 
 把一次代码优化改动沉淀为代码品味

@@ -1,7 +1,6 @@
 ---
 name: refine
 description: 调度职责正交的独立审查子代理（根因减法、测试信噪比、规约保真、代码品味与注释精简）并驱动修复闭环，直至全部 PASS。
-disable-model-invocation: true
 ---
 
 # 多维独立代码审查与重构调度（Refine）
