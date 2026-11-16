@@ -42,9 +42,8 @@
 | **`scout`** | 只读检索代码库、查证文件与环境事实 | **DeepSeek (Flash)** | Kimi |
 | **`Ambiguity Gate`** | 独立上下文需求多义性与未定义边界审查 | **GPT（高推）** | Claude Opus |
 | **`skeleton`** | 定位上游根因修改点、定义数据结构与跨模块接口签名 | **GPT（高推）**（偏后端/算法）<br>**Claude Opus**（偏前端/全栈架构） | Claude Sonnet |
-| **`contract`** | 编写高密度表驱动失败契约测试（Failing Tests） | **GPT**（后端逻辑/接口测试）<br>**Claude Sonnet**（复杂前端/长链路测试）<br>**Kimi**（小型前端组件测试） | Claude Sonnet / GPT |
-| **`work` — 后端** | 后端业务逻辑、数据库/API、并发与底层算法实现 | **GPT** | Claude Sonnet |
-| **`work` — 前端（中大型/长周期）** | 多组件联动、复杂状态机、长链路前端工程任务 | **Claude（Sonnet / Opus）** | GPT |
+| **`work` — 后端** | 后端契约测试、业务逻辑、数据库/API、并发与底层算法实现 | **GPT** | Claude Sonnet |
+| **`work` — 前端（中大型/长周期）** | 契约测试、多组件联动、复杂状态机、长链路前端工程任务 | **Claude（Sonnet / Opus）** | GPT |
 | **`work` — 前端（小型/局部）** | 单组件开发、样式修复、局部交互微调、轻量前端任务 | **Kimi** | Claude Sonnet |
 | **`work` — 跨模块长周期任务** | 涉及多文件协同、长耗时持续修复并通过 `./scripts/gate` | **Claude（Sonnet / Opus）** | GPT |
 | **`refine` — 减法与规约** | `Subtraction`（消除冗余补丁）、`Spec Fidelity`、`Test SNR` | **GPT（高推）** | Claude Opus |

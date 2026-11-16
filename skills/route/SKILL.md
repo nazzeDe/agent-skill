@@ -10,9 +10,10 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
 ## 编排者上下文隔离准则
 
 * **主控仅负责意图对齐与任务调度，不读取阶段执行细则**：
-  `skeleton`、`contract`、`work`、`refine` 四个阶段的 Skill 是供执行子代理（`worker` / `reviewer`）读取的。**主控编排 Agent 严禁在自己的上下文中用 `read` 读取这四个 `SKILL.md` 文件**，以保持主会话上下文精简。
+  `skeleton`、`work`、`refine` 三个阶段的 Skill 是供执行子代理（`worker` / `reviewer`）读取的。**主控编排 Agent 严禁在自己的上下文中用 `read` 读取这三个 `SKILL.md` 文件**，以保持主会话上下文精简。
 * **通过路径指针派发任务（Task Dispatch via Pointers）**：
   当推进到对应阶段时，主控通过 `subagent` 工具派生 `worker` 或 `reviewer`，并在子代理的 `task` 指令中附上对应 Skill 的绝对路径（如：`先读取并严格遵循 /home/nazze/.agents/skills/skeleton/SKILL.md`），让子代理在自己独立的全新上下文（`fresh`）中加载执行。
+* **Work 强制 Fresh Context**：每次派发 `worker` 都必须使用 `context: "fresh"`（或当前 harness 的等价配置）创建独立上下文，不得 `fork`、继承父会话或通过 `resume` 延续上一任务的 Worker。主控仅传递原始需求、已确认设计摘要、当前原子任务与必要路径，由 Worker 自行读取代码。该约束同时适用于实现与审查修复。
 * **按任务特征自动选配子代理模型（Model Routing）**：
   当所处 harness 的 `subagent` 工具支持指定模型（如提供 `model` 参数）时，在首次派发子代理前读取 [`MODELS.md`](MODELS.md)，根据**阶段类型、前后端领域与任务周期长短**为每个子代理选配最合适的模型；若 harness 不支持指定模型，忽略该文件并使用默认配置。
 
@@ -27,12 +28,12 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
   * 若需求存在模糊点或未决分支，主控在当前会话读取并运行 [`/align`](/home/nazze/.agents/skills/align/SKILL.md)，通过决策树问答与用户对齐；若涉及领域术语或架构权衡，同步加载 [`/domain-modeling`](/home/nazze/.agents/skills/domain-modeling/SKILL.md) 维护 `GLOSSARY.md` 与 `docs/adr/`。
   * 对齐后若暂不编码或用户要求留档，将确定的核心意图、边界与接口决策写入 `.scratch/<slug>.md`，或用 `gh issue create` / `gh issue edit` 同步至远端。
 
-## 核心开发管道：`skeleton -> contract -> work -> refine`
+## 核心开发管道：`skeleton -> work -> refine`
 
 根据初始需求的明确程度，动态选择切入阶段，按顺序调度子代理：
 
 ```text
-[需求对齐 /align] ──> [1. skeleton 类型与签名设计] ──(人类确认设计摘要)──> [2. contract 契约测试] ──> [3. work 实现与静态门禁] ──> [4. refine 多维审查]
+[需求对齐 /align] ──> [1. skeleton 类型与签名设计] ──(人类确认设计摘要)──> [2. work 契约测试、实现与静态门禁] ──> [3. refine 多维审查]
 ```
 
 ### 动态切入判据
@@ -40,7 +41,7 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
 
 * **能一句话写出完成定义（DoD）+ 落点 `file:行`**：**禁止进入 `/align`**，直接派发 `skeleton` 或 `work`。绝大多数缺陷修复与局部改动属于此类。
 * **DoD 写不出来，或用户意图存在业务分叉**：先在主会话运行 `/align` 对齐意图；对齐结束后重新从上一条判定入口。
-* **接口签名已存在且无需改动的局部修改**：直接从 `contract` 或 `work` 切入，后接 `refine`。
+* **接口签名已存在且无需改动的局部修改**：直接从 `work` 切入，后接 `refine`。
 
 **未预期设计不随行**：凡"删掉它，原问题依然存在"的条目（align 或 skeleton 期间浮现的），一律写成 `.scratch/issues/<slug>.md`。该 issue 是这类设计日后重新进入管线的**唯一入口**，本次任务不实现它。
 
@@ -48,18 +49,15 @@ description: 编排 Agent 的开发工作流路由器与总控台。适用于接
 
 * **派发 `skeleton`（上游修改点定位 + 类型与接口签名设计）**
   * **动作**：派生单个 `worker` 子代理（使用高推理能力模型），指令其读取 `/home/nazze/.agents/skills/skeleton/SKILL.md`，传入对齐后的需求描述与完成定义（DoD）。
-  * **子代理产出**：返回给主控的结构化**设计摘要**（不落盘）——修改点声明（含 `file:行` 依据）、数据结构定义、接口签名清单（签名 + 职责 + 实现提示）、并行切分判定。**skeleton 不写任何文件**，结束时 `git status --porcelain` 必须为空；主控将这份摘要原样转发给 `work`。
-  * **人类唯一常规确认点（Checkpoint）**：主控将“修改点依据 + 签名清单”以设计摘要形式（而不是 diff 或文件）展示给用户确认。**用户确认后，主控应全自动连续驱动后续 `contract -> work -> refine` 阶段，中途不再打扰用户。**
+  * **子代理产出**：返回给主控的结构化**设计摘要**（不落盘）——修改点声明（含 `file:行` 依据）、数据结构定义、接口签名清单（签名 + 职责 + 实现提示）、原子提交任务清单与并行切分判定。每项任务均须包含单一目标、合规 commit message、实现范围、独立 DoD、静态门禁与前置依赖。**skeleton 不写任何文件**，结束时 `git status --porcelain` 必须为空；主控将这份摘要原样转发给 `work`。
+  * **人类唯一常规确认点（Checkpoint）**：主控将“修改点依据 + 签名清单 + 提交任务清单”以设计摘要形式（而不是 diff 或文件）展示给用户确认。**用户确认后，主控应全自动连续驱动后续 `work -> refine` 阶段，中途不再打扰用户。**
 
-* **派发 `contract`（编写高密度失败测试 + 信噪比审查）**
-  * **动作**：派生 `worker` 子代理，指令其读取 `/home/nazze/.agents/skills/contract/SKILL.md`。
-  * **子代理产出**：在公共接口与关键内部转换节点编写预期失败（Red）的高密度测试（表驱动优先），并完成测试信噪比筛查（剔除四类低价值测试）。
-
-* **派发 `work`（函数体实现 + 静态门禁校验与修复）**
-  * **动作**：依据 `skeleton` 返回的模块切分清单：
-    * **单模块**：派生单个 `worker` 子代理，指令其读取 `/home/nazze/.agents/skills/work/SKILL.md`；
-    * **多正交模块**：使用并行 Worktrees（`worktree: true`）同时派生多个 `worker` 子代理，各自负责被分配的函数签名（严禁修改公共类型与签名），完成后合并回主工作树并执行一次项目静态门禁（`./scripts/gate`）。
-  * **子代理产出**：所有契约测试通过（Green），且确定性静态门禁脚本（编译、Linter、测试、`crapper --no-coverage`、`dryer`、静态注释检查）退出码为 `0`。
+* **派发 `work`（逐任务契约测试 + 实现 + 静态门禁 + 提交）**
+  * **动作**：严格依据 `skeleton` 返回的提交任务清单逐项派发，每项任务使用一个新的 Fresh-Context `worker`，并指令其读取 `/home/nazze/.agents/skills/work/SKILL.md`：
+    * **串行任务**：等待前置任务提交后再派发后续任务；大需求不得合并成一次实现或一次提交。
+    * **正交并行任务**：使用独立 Worktrees（`worktree: true`）同时派发，各自只实现当前任务并创建一个提交（严禁修改公共类型与签名）；主控集成各提交后执行一次项目静态门禁（`./scripts/gate`）。
+  * **单任务产出**：在公共接口与关键内部转换节点编写预期失败（Red）的高密度测试（表驱动优先），随后完成最小实现，使所有契约测试通过（Green），且确定性静态门禁脚本（编译、Linter、测试、`crapper --no-coverage`、`dryer`、静态注释检查）退出码为 `0`。
+  * **提交要求**：每个 Worker 只提交当前任务，使用规划阶段拟定的 commit message，并返回 commit hash、DoD 验证与门禁结果；不得携带其他任务改动、合并多个任务或修改既有提交。
 
 * **派发 `refine`（多维独立审查 + 重构修复闭环）**
   * **动作**：派生子代理执行 `/home/nazze/.agents/skills/refine/SKILL.md` 的独立审查协议：

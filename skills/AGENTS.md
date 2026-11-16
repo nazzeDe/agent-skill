@@ -18,7 +18,7 @@
 
 将端到端代码生成分解为状态可观测、单步职责单一的函数式复合变换：
 
-$$Code_{final} = (f_{refine} \circ f_{work} \circ f_{contract} \circ f_{skeleton})(Intent)$$
+$$Code_{final} = (f_{refine} \circ f_{work} \circ f_{skeleton})(Intent)$$
 
 ### 状态演进的基准阶段
 每一阶段转换仅引入**单一维度**的工程决策，禁止跨阶段跳跃：
@@ -26,17 +26,16 @@ $$Code_{final} = (f_{refine} \circ f_{work} \circ f_{contract} \circ f_{skeleton
 * **意图对齐（`align` / Intent & Alignment）**：将模糊的自然语言需求或缺陷表象收敛为无歧义的需求契约。
   * **退出门禁（需求歧义审查 / `Ambiguity Gate`）**：主持对话的 Agent 容易因共享上下文而忽略隐式假设。对齐结束前，必须由无对话背景的独立 Fresh-Context Agent 对需求契约执行严格字面审查（检查是否存在多重合法字面解释、未定义的异常状态或未划定的非目标范围），仅当输出 `PASS` 时才算完成对齐。
 * **静态类型与接口签名（`skeleton` / Types & Signatures）**：消除结构歧义，锁定系统的静态类型与模块边界。
-  * **核心产物**：领域统一术语（Canonical Terms）、核心数据结构（Data Shape / Types）、跨模块接口签名（Seams / Function Signatures）、上游调用方不变量（Caller Invariants）。
+  * **核心产物**：领域统一术语（Canonical Terms）、核心数据结构（Data Shape / Types）、跨模块接口签名（Seams / Function Signatures）、上游调用方不变量（Caller Invariants）、原子提交任务清单（每项含单一目标、合规 Commit Message、独立 DoD 与前置依赖）。
   * **核心原则**：先定义数据结构，再编写逻辑；利用类型系统使非法状态在编译期不可表示（Make illegal states unrepresentable）；先向上游回溯定位最小根因修改点，再决定修改位置。
-* **行为契约与故障隔离测试（`contract` / Contract & Fault-Isolation Tests）**：消除边界歧义，锁定各层关键接口的可观测行为。
-  * **核心产物**：基于已锁定的接口签名，在公共接口（Public Seam）与内部非平庸转换节点上，编写高信息密度的预期失败测试（Failing Tests / Red）。
-* **最小可行实现（`work` / Minimal Implementation & Static Gate）**：在不修改已锁定公共签名的前提下编写最小函数体实现，并通过全部确定性静态检查。
+* **契约测试、最小可行实现与静态门禁（`work` / Contract Tests, Implementation & Static Gate）**：在不修改已锁定公共签名的前提下，于同一阶段编写契约测试、完成最小函数体实现，并通过全部确定性静态检查。
+  * **核心产物**：基于已锁定的接口签名，在公共接口（Public Seam）与内部非平庸转换节点上编写高信息密度的预期失败测试（Failing Tests / Red），随后实现至全部测试通过（Green）。每个原子任务独立验收并创建一个提交；大需求按依赖逐任务完成，不在单个 Worker 中一次性实现。
 * **多维审查与代码化简（`refine` / Multi-Agent Review & Simplification）**：在不改变外部可观测行为的前提下，消除下游冗余补丁、降低圈复杂度、消除结构重复、对齐代码品味与注释规范。
 
 ### 动态切入（按初始需求明确度选择入口）
 任务从哪一阶段切入，取决于初始输入的明确程度：
-* 模糊新特性：从 `align -> skeleton -> contract -> work -> refine` 完整执行。
-* 边界明确的功能或需定位根因的缺陷：直接从 `skeleton`（定义签名）或 `contract`（编写测试）切入。
+* 模糊新特性：从 `align -> skeleton -> work -> refine` 完整执行。
+* 边界明确的功能或需定位根因的缺陷：直接从 `skeleton`（定义签名）或 `work`（契约测试与实现）切入。
 * 修改点与签名已固定的局部修改：直接从 `work -> refine` 切入。
 
 ### 验证与审查的三级过滤（Static $\to$ Agent $\to$ Human）
@@ -148,7 +147,7 @@ $$Code_{final} = (f_{refine} \circ f_{work} \circ f_{contract} \circ f_{skeleton
   **跨模块数据结构与接口契约必须由单一主节点在源头统一定义。**
   在 `skeleton` 阶段，由单个高推理能力模型统一设计**类型定义、数据结构与函数签名清单**，以设计摘要返回主控、**不改动仓库任何文件**（结束时 `git status` 干净），经人类确认后原样转发给 `work` 落盘。
 * **并行独立实现（Implementation / Map Execution）**
-  只有在类型与签名契约被设计摘要锁定并经人类确认后，才按**无共享状态的正交模块/函数边界**分发给多个并行工作节点（Worktrees）。
-  * **执行准则**：并行节点仅在已锁定的函数签名内部编写实现与测试，**严禁私自修改跨模块公共类型与接口签名**。若发现接口签名本身无法满足需求，必须中断并上报主控节点统一修正。
+  只有在类型、签名契约与原子提交任务清单被设计摘要锁定并经人类确认后，才按**无共享状态的正交任务边界**分发给多个并行工作节点（Worktrees）。所有 `work` 节点必须使用独立 Fresh Context，不得 fork 父会话或延续上一任务的 Worker；串行任务须等待前置任务提交。
+  * **执行准则**：每个节点仅在当前原子任务范围内编写实现与测试，验收后按规划 Commit Message 创建一个提交，**严禁私自修改跨模块公共类型与接口签名**。若发现接口签名本身无法满足需求，必须中断并上报主控节点统一修正。
 * **合流校验与全局去重（Reduce Verification）**
   除多模块实现外，**前置代码库检索（多路 `scout` 并行）**与**后置多维审查（三路 `reviewer` 并行）**全面并行化。所有并行实现分支合并后，在全局 Diff 上统一运行静态门禁（`./scripts/gate`，含 `dryer` AST 查重）与 `Subtraction Reviewer`，消除各分支内部各自产生的重复局部逻辑。
