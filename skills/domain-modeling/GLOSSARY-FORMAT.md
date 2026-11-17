@@ -1,13 +1,13 @@
-# GLOSSARY.md 格式
+# 领域术语表格式（`AGENTS.md` 的 `## Domain Glossary` 节）
+
+术语表默认写在项目根目录 `AGENTS.md` 的 `## Domain Glossary` 节内。它与环境指针同处一个文件，因此整个文件仍需极度精简：只有该节承载内容，不写工作流编排规则。
 
 ## 结构
 
 ```md
-# {Context Name}
+## Domain Glossary
 
 {One or two sentence description of what this context is and why it exists.}
-
-## Language
 
 **Order**:
 {A one or two sentence description of the term}
@@ -31,12 +31,12 @@ _Avoid_: Client, buyer, account
 
 ## 单 context 与多 context repos
 
-**Single context（多数 repos）：** root 下一个 `GLOSSARY.md`。
+**Single context（多数 repos）：** 术语直接列在根 `AGENTS.md` 的 `## Domain Glossary` 节。
 
-**Multiple contexts：** root 下一个 `GLOSSARY-MAP.md`，列出 contexts、它们的位置和彼此关系：
+**Multiple contexts：** 根 `AGENTS.md` 的 `## Domain Glossary` 节改为 Glossary Map，列出 contexts、它们的位置和彼此关系；每个 context 各自维护一份 `GLOSSARY.md`（标题为该 context 名），不再另建 `GLOSSARY-MAP.md`。
 
 ```md
-# Glossary Map
+## Domain Glossary
 
 ## Contexts
 
@@ -51,10 +51,12 @@ _Avoid_: Client, buyer, account
 - **Ordering -> Billing**: Shared types for `CustomerId` and `Money`
 ```
 
+各 context 的 `GLOSSARY.md` 沿用同一结构，首行标题写作 `# {Context Name}`，直接以事实性描述开头，其余规则不变。
+
 Skill 会推断应使用哪种结构：
 
-- 如果存在 `GLOSSARY-MAP.md`，读取它来找到 contexts
-- 如果只有 root `GLOSSARY.md`，按 single context 处理
-- 如果两者都没有，当第一个 term 被解决时懒创建 root `GLOSSARY.md`
+- 如果根 `AGENTS.md` 的 `## Domain Glossary` 节已列出多个 context 指针（或仓库已有 `GLOSSARY-MAP.md`），按多 context 处理
+- 如果该节直接列出术语，按 single context 处理
+- 如果两者都没有，当第一个 term 被解决时懒创建根 `AGENTS.md` 的该节
 
 存在多个 contexts 时，推断当前主题属于哪一个。如果不清楚，就询问。

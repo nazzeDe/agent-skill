@@ -22,7 +22,7 @@ disable-model-invocation: true
 ### 场景 A：新功能开发（Green Field）
 
 从业务需求出发，自顶向下设计：
-* **领域建模（Domain Modeling）**：识别核心领域概念、实体、值对象，对齐 `GLOSSARY.md` 中的 canonical terms。
+* **领域建模（Domain Modeling）**：识别核心领域概念、实体、值对象，对齐 `AGENTS.md` 中 `## Domain Glossary` 的 canonical terms。
 * **模块边界划分（Module Boundaries）**：确定功能归属哪个模块、与现有模块的交互界面（Seams）在哪里。
 * **数据流向分析（Data Flow）**：明确数据从哪里来（入口/Boundary）、经过哪些转换、最终去哪里（存储/输出）。
 * **接口抽象层次（Abstraction Level）**：确定公共接口（Public API）、模块内接口（Internal Seams）、实现细节（Private）的边界。
@@ -34,7 +34,7 @@ disable-model-invocation: true
 * **区分生产端与消费端**：问题或需求源于数据产生的入口（Boundary / Parser / Constructor），还是下游消费处？优先在数据入口做归一化或类型收紧，避免在多个下游消费点重复添加防御性 `if/else` 分支。
 * **核对调用方不变量（Caller Invariants）**：检查所有真实调用点已经保证的前置条件与不变量。凡是上游契约已保证不会发生的状态，严禁在签名或数据结构中为其预留防御性分支。
 * **第一性原理审视（First-Principles Design）**：假设项目今天刚创建、原本就包含此需求，最直接的数据结构与接口应当如何定义？若现有结构阻碍了简洁表达，直接重构该数据结构，而非在旧结构外层叠加适配代码。
-* **对齐领域词汇**：若仓库存在 `GLOSSARY.md` 或相关 `docs/adr/`，类型名、字段名与函数名必须严格使用其中的 canonical terms。
+* **对齐领域词汇**：若仓库 `AGENTS.md` 存在 `## Domain Glossary` 节或相关 `docs/adr/`，类型名、字段名与函数名必须严格使用其中的 canonical terms。
 * **完成判据**：已用一两句话明确说明"选定哪个上游位置作为修改点，以及为什么它比在下游修改产生更少的代码"。
 
 ## 第二步：规划类型与签名（Type & Signature Plan）

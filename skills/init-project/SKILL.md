@@ -13,7 +13,7 @@ disable-model-invocation: true
 在不向用户提问的前提下，自动检查当前仓库：
 * **语言与工具链**：识别配置文件（`Cargo.toml`、`pyproject.toml`、`package.json`、`go.mod`、`deps.edn`、`CMakeLists.txt` 等）、包管理器、现有测试命令与 Linter 配置。
 * **本地门禁工具**：检查 `/home/nazze/Studio/oss/unclebob/crapper/crapper` 与 `/home/nazze/Studio/oss/unclebob/dryer/dryer`（或环境变量中的同名命令）是否可用。
-* **现有文档与钩子**：检查 `AGENTS.md` / `CLAUDE.md`、`GLOSSARY.md`、`docs/agents/` 及 `.git/hooks/pre-commit`。
+* **现有文档与钩子**：检查 `AGENTS.md` / `CLAUDE.md`（含其中的 `## Domain Glossary` 节）、`docs/agents/` 及 `.git/hooks/pre-commit`。
 * **完成判据**：已掌握当前项目真实的编译、测试、Linter 命令及现有配置状态。
 
 ## 一轮问答敲定硬性要求
@@ -40,15 +40,15 @@ disable-model-invocation: true
   * ➡️ 推荐：挂载 `./scripts/gate`（若全量测试较慢，则在 pre-commit 中运行除慢速集成测试外的快速静态门禁）。
 
 * **❓ 极简环境指针（`AGENTS.md` / `CLAUDE.md`）**：
-  * 在项目已有的 `AGENTS.md` 或 `CLAUDE.md`（若均不存在则创建 `AGENTS.md`）中，**仅写入环境事实指针**（严禁写入任何工作流编排规则）：
+  * 在项目已有的 `AGENTS.md` 或 `CLAUDE.md`（若均不存在则创建 `AGENTS.md`）中，**仅写入环境事实指针与领域术语表**（严禁写入任何工作流编排规则）：
     ```markdown
     ## Environment
     - Static gate: `./scripts/gate`
-    - Domain glossary: `GLOSSARY.md`
     - Code taste: `docs/agents/taste.md`
     - Comment rules: `docs/agents/comment-guidelines.md`
     ```
-  * ➡️ 推荐：更新环境指针，并按需创建空的 `docs/agents/taste.md`。
+    领域术语表不使用单独文件，而是同一 `AGENTS.md` 中的 `## Domain Glossary` 节，格式见 [`/home/nazze/.agents/skills/domain-modeling/GLOSSARY-FORMAT.md`](/home/nazze/.agents/skills/domain-modeling/GLOSSARY-FORMAT.md)；懒创建，第一个 term 确定时才补上该节，不预留空标题。
+  * ➡️ 推荐：更新环境指针，按需创建空的 `docs/agents/taste.md`。
 
 * **完成判据**：用户明确确认或调整了上述四项配置。
 

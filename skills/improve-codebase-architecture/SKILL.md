@@ -11,7 +11,7 @@ disable-model-invocation: true
 这个命令由项目的 domain model 提供信息，并建立在共享 design vocabulary 上：
 
 - 调用 Skill 工具并指定 `codebase-design`，获取 architecture vocabulary（**module**、**interface**、**depth**、**seam**、**adapter**、**leverage**、**locality**）及其 principles（deletion test、"the interface is the test surface"、"one adapter = hypothetical seam, two = real"）。每条建议都准确使用这些术语，不要漂移到 "component"、"service"、"API" 或 "boundary"。
-- `GLOSSARY.md` 中的 domain language 会为好的 seams 命名；`docs/adr/` 中的 ADRs 记录这个命令不应重新争论的 decisions。
+- `AGENTS.md` 中 `## Domain Glossary` 节的 domain language 会为好的 seams 命名；`docs/adr/` 中的 ADRs 记录这个命令不应重新争论的 decisions。
 
 ## 流程
 
@@ -22,7 +22,7 @@ disable-model-invocation: true
 - 如果用户点名了方向（module、subsystem 或 pain point），就按该方向探索，跳过下面的推断。
 - 否则，向前回看一段足够长的 commit history（`git log --oneline`），找出反复出现的 files 和 areas，让这些 hot spots 成为首要关注点。如果变更分散、没有明显 hot spot，再扩大范围。
 
-先读取项目 domain glossary（`GLOSSARY.md`）以及你将触碰区域的 ADRs。
+先读取项目 domain glossary（`AGENTS.md` 的 `## Domain Glossary` 节）以及你将触碰区域的 ADRs。
 
 然后 spawn 一个 sub-agent 来遍历 codebase。不要套死板 heuristics；自然探索，并记录你感到 friction 的地方：
 
@@ -51,7 +51,7 @@ Report 使用 **Tailwind via CDN** 做 layout/styling，用 **Mermaid via CDN** 
 
 Report 末尾包含**首选推荐区**：你会先处理哪个 candidate，以及为什么。
 
-**用 `GLOSSARY.md` vocabulary 表达 domain，用 `/codebase-design` vocabulary 表达 architecture。** 如果 `GLOSSARY.md` 定义了 "Order"，就说 "Order intake module"，不要说 "FooBarHandler"，也不要说 "Order service"。
+**用 `AGENTS.md` 中的 `## Domain Glossary` vocabulary 表达 domain，用 `/codebase-design` vocabulary 表达 architecture。** 如果术语表定义了 "Order"，就说 "Order intake module"，不要说 "FooBarHandler"，也不要说 "Order service"。
 
 **ADR conflicts**：如果 candidate 与现有 ADR 冲突，只有在 friction 真实到值得重新打开 ADR 时才提出。Card 中明确标记（例如 warning callout：_"contradicts ADR-0007 - but worth reopening because..."_）。不要列出 ADR 理论上禁止的每个 refactor。
 
@@ -61,6 +61,6 @@ Report 末尾包含**首选推荐区**：你会先处理哪个 candidate，以�
 
 ### 3. Align 循环
 
-用户选中 candidate 后，调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`）与 `domain-modeling`（读取 `/home/nazze/.agents/skills/domain-modeling/SKILL.md`），与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留，并在过程中同步更新 `GLOSSARY.md` 与必要的 `ADR`。
+用户选中 candidate 后，调用 Skill 工具并指定 `align`（读取 `/home/nazze/.agents/skills/align/SKILL.md`）与 `domain-modeling`（读取 `/home/nazze/.agents/skills/domain-modeling/SKILL.md`），与用户走完 decision tree：constraints、dependencies、deepened module 的形状、seam 后面放什么、哪些 tests 能保留，并在过程中同步更新 `AGENTS.md` 的 `## Domain Glossary` 节与必要的 `ADR`。
 
 如果用户想探索 deepened module 的 alternative interfaces，调用 Skill 工具并指定 `codebase-design`，并使用其中的 design-it-twice parallel sub-agent pattern。

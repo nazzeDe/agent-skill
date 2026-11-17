@@ -107,7 +107,7 @@ $$Code_{final} = (f_{refine} \circ f_{work} \circ f_{skeleton})(Intent)$$
 
 ### 文档最小化准则（Codebase as Single Source of Truth）
 * **禁止复述代码现状的说明性文档**：目录结构、类型定义与契约测试本身即为准确的实时文档。严禁生成总结“模块包含哪些文件、接口如何调用”的说明性文档（此类文档随代码演进会迅速过期失真）。
-* **仅记录代码无法直接表达的元决策**：仅维护两类极简文档——**领域术语表与架构决策记录（`GLOSSARY.md` 与 `docs/adr/`，记录为什么排除其他方案）**，以及**代码品味库（`docs/agents/taste.md`）**。
+* **仅记录代码无法直接表达的元决策**：仅维护两类极简文档——**领域术语表与架构决策记录（`AGENTS.md` 的 `## Domain Glossary` 节与 `docs/adr/`，记录为什么排除其他方案）**，以及**代码品味库（`docs/agents/taste.md`）**。
 
 ---
 

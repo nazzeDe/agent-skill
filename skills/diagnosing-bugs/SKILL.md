@@ -7,7 +7,7 @@ description: 面向棘手缺陷和性能回退的诊断循环。适用于用户�
 
 面向棘手 bugs 的纪律。只有在明确说明理由时才跳过阶段。
 
-探索 codebase 时，先读取 `GLOSSARY.md`（如果存在），建立相关 modules 的清晰 mental model，并检查你将触碰区域的 ADRs。
+探索 codebase 时，先读取 `AGENTS.md` 中的 `## Domain Glossary` 节（如果存在），建立相关 modules 的清晰 mental model，并检查你将触碰区域的 ADRs。
 
 ## 脱敏
 
